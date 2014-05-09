@@ -19,8 +19,19 @@ module.exports.get = function (key) {
   return module.exports.data[key];
 };
 
-//module.exports.set = function (key, value) {
-//module.exports.update();
-//};
+module.exports.set = function (key, value) {
+  models.Setting.update(
+      { key: key }
+    , { key: key, value: value }
+    , { upsert: true }
+    , function (err) {
+        if (err) {
+          console.error(err);
+        } else {
+          module.exports.data[key] = value;
+        }
+      }
+  );
+};
 
 module.exports.update();
