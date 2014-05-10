@@ -47,5 +47,7 @@ module.exports = function (mongoose) {
 
   model = mongoose.model('Page', schema);
 
+  model.listSelectFields = '_id title';
+
   return model;
 };

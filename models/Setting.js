@@ -20,5 +20,7 @@ module.exports = function (mongoose) {
 
   model = mongoose.model('Setting', schema);
 
+  model.listSelectFields = '_id key value';
+
   return model;
 };

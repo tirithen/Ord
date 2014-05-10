@@ -1,14 +1,15 @@
 var models = require('../models')
   , services = require('../services')
   , modelName = ''
+  , select = ''
   , writeProtectedPropertyNames = [
       'createdAt', 'deltedAt', 'updatedAt', 'createdBy', 'deletedBy', 'updatedBy'
     , '_id', '__v'
   ];
 
-function addListAction(controller, model, select) {
+function addListAction(controller, model) {
   controller['GET /api/v1/' + model.modelName] = function (req, res) {
-    models.Page.find({}, select || '_id', function (err, pages) {
+    model.find({}, model.listSelectFields || '_id', function (err, pages) {
       if (err) {
         res.status(500);
         services.sendJSON(res);
@@ -21,7 +22,7 @@ function addListAction(controller, model, select) {
 
 function addShowAction(controller, model) {
   controller['GET /api/v1/' + model.modelName + '/:id'] = function (req, res) {
-    models.Page.findById(req.params.id, function (err, page) {
+    model.findById(req.params.id, function (err, page) {
       if (err) {
         res.status(500);
         services.sendJSON(res);
@@ -41,7 +42,7 @@ function addUpsertAction(controller, model) {
     });
 
     if (id) {
-      models.Page.findById(id, function (err, page) {
+      model.findById(id, function (err, page) {
         var propertyName = '';
 
         for(propertyName in req.body) {
