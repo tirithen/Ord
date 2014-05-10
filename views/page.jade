@@ -7,20 +7,20 @@ block aside
           li
             a(href="/") Hem
           each breadcrumbPage, index in page.breadcrumbs
-            if breadcrumbPage.title
+            if breadcrumbPage.isPublished && breadcrumbPage.title
               if index === page.breadcrumbs.length - 1
                 li.active= breadcrumbPage.title
               else
                 li
-                  a(href="/#{breadcrumbPage.url}")= breadcrumbPage.title
+                  a(href="/#{encodeURI(breadcrumbPage.url)}")= breadcrumbPage.title
 
   if pageChildren && pageChildren.length > 0
     aside.col-xs-2.pull-right
         ul.nav.nav-stacked
           each pageChild in pageChildren
-            if pageChild.title
+            if pageChild.isPublished && pageChild.title
               li
-                a(href="/#{pageChild.url}")= pageChild.title
+                a(href="/#{encodeURI(pageChild.url)}")= pageChild.title
 
 
 block content

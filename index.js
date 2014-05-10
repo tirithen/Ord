@@ -1,12 +1,17 @@
-var models = require('./models')
-  , services = require('./services')
-  , path = require('path')
+var path = require('path')
   , async = require('async')
+  , bodyParser = require('body-parser')
   , express = require('express')
-    server = express();
+  , server = express()
+  , models = require('./models')
+  , services = require('./services')
+  , controller;
 
+server.use(bodyParser());
 server.set('views', path.join(__dirname, 'views'));
 server.set('view engine', 'jade');
+
+controller = require('./controllers')(server);
 
 server.get('*', function (req, res) {
   async.parallel(
@@ -21,20 +26,19 @@ server.get('*', function (req, res) {
         if (err) {
           console.error(err);
           res.status(500).send('Internal server error');
-        } else if (page) {
+        } else if (page && page.isPublished) {
           services.findPageChildren(page, function (err, pageChildren) {
             if (err) {
               console.error(err);
               res.status(500).send('Internal server error');
             } else {
-              res.render(
-                'page',
-                {
-                    rootPages: rootPages
-                  , page: page
-                  , pageChildren: pageChildren
-                  , settings: services.settings.data
-                }
+              services.renderRes(
+                  req, res, 'page'
+                , {
+                      rootPages: rootPages
+                    , page: page
+                    , pageChildren: pageChildren
+                  }
               );
             }
           });

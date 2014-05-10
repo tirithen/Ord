@@ -4,12 +4,22 @@ module.exports = function (mongoose) {
   var model, schema;
 
   schema = new mongoose.Schema({
-    title: { type: String, required: true, trim: true },
-    content: { type: String, trim: true },
-    parent: mongoose.Schema.Types.ObjectId,
-    parent: {type: mongoose.Schema.Types.ObjectId, ref: 'Page' },
-    publishedAt: Date,
-    createdAt: { type: Date, default: Date.now }
+      title: { type: String, required: true, trim: true }
+    , content: { type: String, trim: true }
+    , parent: mongoose.Schema.Types.ObjectId
+    , parent: {type: mongoose.Schema.Types.ObjectId, ref: 'Page' }
+    , publishedAt: Date
+    , updatedAt: { type: Date, default: Date.now }
+    , createdAt: { type: Date, default: Date.now }
+  });
+
+  schema.pre('save', function (next) {
+    this.updatedAt = new Date();
+    next();
+  });
+
+  schema.virtual('isPublished').get(function () {
+    return this.publishedAt < new Date();
   });
 
   schema.virtual('breadcrumbs').get(function () {

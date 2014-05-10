@@ -3,6 +3,7 @@ html
   head
     meta(charset="utf-8")
     title= page.title ? page.title + ' - ' + settings.name : settings.name
+    link(rel="canonical", href="#{encodeURI(req.protocol + '://' + req.headers.host + '/' + page.url})")
     link(rel='stylesheet', href='//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css')
     style
       | body { padding-top: 70px; }
@@ -21,13 +22,13 @@ html
         div.collapse.navbar-collapse
           ul.nav.navbar-nav
             each rootPage in rootPages
-              if rootPage.title
+              if rootPage.isPublished && rootPage.title
                 if page.breadcrumbs[0] && page.breadcrumbs[0]._id.toString() === rootPage._id.toString()
                   li(class="active")
-                    a(href="/#{rootPage.url}")= rootPage.title
+                    a(href="/#{encodeURI(rootPage.url)}")= rootPage.title
                 else
                   li
-                    a(href="/#{rootPage.url}")= rootPage.title
+                    a(href="/#{encodeURI(rootPage.url)}")= rootPage.title
 
     div.container-fluid
       div.row

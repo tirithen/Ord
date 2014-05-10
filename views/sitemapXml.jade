@@ -1,0 +1,7 @@
+| <?xml version="1.0" encoding="utf-8"?>
+urlset(xmlns="http://www.sitemaps.org/schemas/sitemap/0.9")
+  each page in pages
+    if page.isPublished
+      url
+        loc= encodeURI(req.protocol + '://' + req.headers.host + '/' + page.url)
+        lastmod= page.updatedAt.toISOString()
