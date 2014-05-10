@@ -29,6 +29,19 @@ html
                 else
                   li
                     a(href="/#{encodeURI(rootPage.url)}")= rootPage.title
+          if req.user
+            ul.nav.navbar-nav.pull-right
+              li
+                a
+                  img(src="#{req.user.image}", height="16").img-circle
+                  | &nbsp;
+                  span= req.user.name
+              li
+                a(href="/logout") Logout
+          else
+            ul.nav.navbar-nav.pull-right
+              li
+                a(href="/login") Login
 
     div.container-fluid
       div.row

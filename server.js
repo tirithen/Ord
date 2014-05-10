@@ -1,7 +1,10 @@
 var path = require('path')
   , async = require('async')
+  , session = require('express-session')
+  , cookieParser = require('cookie-parser')
   , bodyParser = require('body-parser')
   , serverViewEnableMultipleDirectories = require('./serverViewEnableMultipleDirectories')
+  , passport = require('passport')
   , express = require('express')
   , server = express()
   , models = require('./models')
@@ -9,6 +12,10 @@ var path = require('path')
   , controller;
 
 server.use(bodyParser());
+server.use(cookieParser());
+server.use(session({ secret: services.settings.data.cookieSecret }));
+server.use(passport.initialize());
+server.use(passport.session());
 
 // Select views directory
 serverViewEnableMultipleDirectories(server);
