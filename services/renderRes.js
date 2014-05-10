@@ -1,4 +1,4 @@
-var services = require('./');
+var services;
 
 module.exports = function (req, res, viewName, data) {
   data = data || {};
@@ -9,3 +9,7 @@ module.exports = function (req, res, viewName, data) {
 
   res.render(viewName, data);
 };
+
+module.exports.init = function () {
+  services = require('./');
+}

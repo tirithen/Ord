@@ -2,16 +2,16 @@ var models = require('../models');
 
 module.exports.data = {};
 
-module.exports.update = function () {
+module.exports.load = function (callback) {
   models.Setting.find({}, function (err, settings) {
-    if (err) {
-      console.error(err);
-    } else {
+    if (!err && Array.isArray(settings)) {
       module.exports.data = {};
       settings.forEach(function (setting) {
         module.exports.data[setting.key] = setting.value;
       });
     }
+
+    callback(err);
   });
 };
 
@@ -33,5 +33,3 @@ module.exports.set = function (key, value) {
       }
   );
 };
-
-module.exports.update();
