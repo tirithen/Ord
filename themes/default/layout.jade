@@ -1,71 +1,15 @@
 doctype html
 html
   head
-    meta(charset="utf-8")
-    title= page && page.title ? page.title + ' - ' + settings.name : settings.name
-    link(rel="canonical", href="#{encodeURI(req.protocol + '://' + req.headers.host + '/' + page.url})")
-    link(rel='stylesheet', href='//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css')
-    style
-      | body { padding-top: 70px; }
-    script(src='//code.jquery.com/jquery-1.11.0.min.js')
-    script(src='//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js')
+    block metaTags
+      include partials/metaTags
+    block resources
+      include partials/resources
   body
-    div.navbar.navbar-inverse.navbar-fixed-top(role="navigation")
-      div.container-fluid
-        div.navbar-header
-          button.navbar-toggle(type="button", data-toggle="collapse", data-target=".navbar-collapse")
-            span.sr-only Toggle navigation
-            span.icon-bar
-            span.icon-bar
-            span.icon-bar
-          a.navbar-brand(href="/")= settings.name
-        div.collapse.navbar-collapse
-          ul.nav.navbar-nav
-            each rootPage in rootPages
-              if rootPage.isPublished && rootPage.title
-                if page && page.breadcrumbs[0] && page.breadcrumbs[0]._id.toString() === rootPage._id.toString()
-                  li(class="active")
-                    a(href="/#{encodeURI(rootPage.url)}")= rootPage.title
-                else
-                  li
-                    a(href="/#{encodeURI(rootPage.url)}")= rootPage.title
-          ul.nav.navbar-nav.pull-right
-            if req.user
-              li
-                a(href="/administration/page/create").btn.btn-info Create a new Page
-              li
-                a
-                  img(src="#{req.user.image}", height="16").img-circle
-                  | &nbsp;
-                  span= req.user.name
-              li
-                a(href="/logout") Logout
-            else
-              li.pull-right
-                a(href="/login") Login
-
+    block mainMenu
+      include partials/mainMenu
     div.container-fluid
       div.row
         block aside
-          if page && page.breadcrumbs && page.breadcrumbs.length > 1
-            aside.col-xs-10
-                ol.breadcrumb
-                  li
-                    a(href="/") Hem
-                  each breadcrumbPage, index in page.breadcrumbs
-                    if breadcrumbPage.isPublished && breadcrumbPage.title
-                      if index === page.breadcrumbs.length - 1
-                        li.active= breadcrumbPage.title
-                      else
-                        li
-                          a(href="/#{encodeURI(breadcrumbPage.url)}")= breadcrumbPage.title
-
-          if pageChildren && pageChildren.length > 0
-            aside.col-xs-2.pull-right
-                ul.nav.nav-stacked
-                  each pageChild in pageChildren
-                    if pageChild.isPublished && pageChild.title
-                      li
-                        a(href="/#{encodeURI(pageChild.url)}")= pageChild.title
-
+          include partials/aside
         block content
