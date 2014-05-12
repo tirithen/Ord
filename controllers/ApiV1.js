@@ -3,9 +3,9 @@ var models = require('../models')
   , modelName = ''
   , select = ''
   , writeProtectedPropertyNames = [
-      'createdAt', 'deltedAt', 'updatedAt', 'createdBy', 'deletedBy', 'updatedBy'
-    , '_id', '__v'
-  ];
+        'createdAt', 'deltedAt', 'updatedAt', 'createdBy', 'deletedBy', 'updatedBy'
+      , '_id', '__v'
+    ];
 
 function addListAction(controller, model) {
   controller['GET /api/v1/' + model.modelName] = function (req, res) {
@@ -85,3 +85,7 @@ for(modelName in models) {
     addUpsertAction(module.exports, models[modelName]);
   }
 }
+
+module.exports.policies = {
+    '/^\\/api\\/v1/': 'isAuthenticated'
+};

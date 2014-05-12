@@ -1,0 +1,12 @@
+extends layout
+
+block content
+  main.col-xs-10(role="main")
+    if page
+      | #{page.content}
+    else
+      div.alert.alert-danger
+        p
+          strong Page not found!
+          | &nbsp;The page you requested could not be found.&nbsp;
+          a(href="/") Return to start page

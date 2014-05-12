@@ -9,7 +9,8 @@ var path = require('path')
   , server = express()
   , models = require('./models')
   , services = require('./services')
-  , controller;
+  , policies
+  , controllers;
 
 server.use(bodyParser());
 server.use(cookieParser());
@@ -28,8 +29,11 @@ server.set(
 );
 server.set('view engine', 'jade');
 
+// Register the policies
+policies = require('./policies')(server);
+
 // Register the controllers
-controller = require('./controllers')(server);
+controllers = require('./controllers')(server);
 
 // Register the page router
 server.get('*', function (req, res) {
@@ -62,7 +66,21 @@ server.get('*', function (req, res) {
             }
           });
         } else {
-          res.status(404).send('Not found');
+          services.findPageByUrl('/404', function (err, page) {
+            if (err) {
+              console.error(err);
+              res.status(500).send('Internal server error');
+            } else {
+              res.status(404);
+              services.renderRes(
+                  req, res, '404'
+                , {
+                      rootPages: rootPages
+                    , page: page
+                  }
+              );
+            }
+          });
         }
       }
   );

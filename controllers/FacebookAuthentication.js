@@ -55,7 +55,6 @@ passport.use(new FacebookStrategy(
 //     /auth/facebook/callback
 module.exports['GET /login'] = passport.authenticate(
     'facebook'
-  //~ , { callbackURL: '/login/callback' }
 );
 
 // Facebook will redirect the user to this URL after approval.  Finish the
