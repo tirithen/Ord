@@ -11,18 +11,21 @@ div.navbar.navbar-inverse.navbar-fixed-top(role="navigation")
       ul.nav.navbar-nav
         each rootPage in rootPages
           if rootPage.isPublished && rootPage.title
-            if page && page.breadcrumbs[0] && page.breadcrumbs[0]._id.toString() === rootPage._id.toString()
+            if page.breadcrumbs && page.breadcrumbs[0] && page.breadcrumbs[0]._id.toString() === rootPage._id.toString()
               li(class="active")
                 a(href="/#{encodeURI(rootPage.url)}")= rootPage.title
             else
               li
                 a(href="/#{encodeURI(rootPage.url)}")= rootPage.title
       ul.nav.navbar-nav.pull-right
+        //- TODO: Add active state for current page li
         if req.user
           li
-            a(href="/administration/page/create").btn.btn-info Create a new Page
+            a(href="/administration/page/create") Create a new Page
           li
-            a
+            a(href="/administration/settings") Site settings
+          li
+            a(href="/profile")
               img(src="#{req.user.image}", height="16").img-circle
               | &nbsp;
               span= req.user.name

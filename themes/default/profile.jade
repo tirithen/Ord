@@ -1,0 +1,7 @@
+extends layout
+
+block content
+  main.col-xs-10(role="main")
+    img(src="#{ req.user.image }").col-xs-12.col-md-3
+    ul.col-xs-12.col-md-9
+      li= req.user.name
