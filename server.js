@@ -14,7 +14,7 @@ var path = require('path')
 
 server.use(bodyParser());
 server.use(cookieParser());
-server.use(session({ secret: services.settings.data.cookieSecret }));
+server.use(session({ secret: services.siteSettings.getAll().cookieSecret }));
 server.use(passport.initialize());
 server.use(passport.session());
 
@@ -23,7 +23,7 @@ serverViewEnableMultipleDirectories(server);
 server.set(
     'views'
   , [
-        path.join(__dirname, 'themes', services.settings.data.theme || 'default')
+        path.join(__dirname, 'themes', services.siteSettings.getAll().theme || 'default')
       , path.join(__dirname, 'views')
     ]
 );

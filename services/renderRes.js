@@ -1,13 +1,25 @@
-var services;
+var siteSettings = require('./siteSettings');
 
 module.exports = function (req, res, viewName, data) {
   data = data || {};
   data.req = data.req || req;
 
-  data.req.protocol = req.connection.encrypted ? 'https' : 'http';
-  data.settings = services.settings.data;
+  data.req.protocol = data.req.protocol || req.connection.encrypted ? 'https' : 'http';
+  data.siteSettings = data.siteSettings || siteSettings.getAll();
 
-  res.render(viewName, data);
+  if (data.rootPages) {
+      res.render(viewName, data);
+  } else {
+    services.findPageChildren(null, function (err, rootPages) {
+      if (err) {
+        console.error(err);
+        res.status(500).send('Internal server error');
+      } else {
+        data.rootPages = rootPages;
+        res.render(viewName, data);
+      }
+    });
+  }
 };
 
 module.exports.init = function () {

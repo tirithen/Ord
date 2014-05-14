@@ -3,18 +3,8 @@ var services = require('../services')
 
 module.exports = {
     'GET /profile': function (req, res) {
-      services.findPageChildren(null, function (err, rootPages) {
-        if (err) {
-          console.error(err);
-          res.status(500).send('Internal server error');
-        } else {
-          req.user.title = req.user.name;
-          services.renderRes(req, res, 'profile', {
-              page: req.user
-            , rootPages: rootPages
-          });
-        }
-      });
+      req.user.title = req.user.name;
+      services.renderRes(req, res, 'profile', { page: req.user });
     }
   , policies: {
       '/^\\/profile/': 'isAuthenticated'

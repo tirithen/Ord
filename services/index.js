@@ -31,7 +31,6 @@ module.exports = function (callback) {
           services.hasOwnProperty(moduleName) &&
           services[moduleName].init instanceof Function
         ) {
-console.log(moduleName);
           services[moduleName].init();
         }
       }

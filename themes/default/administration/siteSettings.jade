@@ -1,0 +1,15 @@
+extends layout
+
+block content
+  main.col-xs-10(role="main")
+    h1 Site settings
+    form(method="post", action=".", role="form")
+      each setting in siteSettings
+        div.form-group
+          label(for="#{ setting.key }")= setting.key
+          if setting.options
+            select(name="siteSettings[#{ setting.key }][key]", id="#{ setting.key }").form-control
+              each option in setting.options
+                option= option
+          else
+            input(type="text", name="siteSettings[#{ setting.key }][key]", value="#{ setting.value || '' }", id="#{ setting.key }").form-control
