@@ -1,5 +1,5 @@
 doctype html
-html
+html(data-ng-app)
   head
     block metaTags
       include partials/metaTags
@@ -12,4 +12,6 @@ html
       div.row
         block aside
           include partials/aside
+        block flashBag
+          include partials/flashBag
         block content

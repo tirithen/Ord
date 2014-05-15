@@ -51,11 +51,9 @@ server.get('*', function (req, res) {
   async.parallel(
       [
           function (callback) { services.findPageByUrl(req.url, callback) }
-        , function (callback) { services.findPageChildren(null, callback) }
       ]
     , function (err, results) {
-        var page = results[0]
-          , rootPages = results[1];
+        var page = results[0];
 
         if (err) {
           console.error(err);
@@ -67,10 +65,10 @@ server.get('*', function (req, res) {
               res.status(500).send('Internal server error');
             } else {
               services.renderRes(
-                  req, res, 'page'
+                  //~ req, res, 'page'
+                  req, res, 'pageEditable'
                 , {
-                      rootPages: rootPages
-                    , page: page
+                      page: page
                     , pageChildren: pageChildren
                   }
               );

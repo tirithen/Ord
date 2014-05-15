@@ -1,8 +1,5 @@
 extends layout
 
 block content
-  div.col-xs-10.flash
-    if !page.isPublished
-      p.alert.alert-warning This page is not published until #{ page.publishedAt.toLocaleString() }.
   main.col-xs-10(role="main")
     | #{page.content}

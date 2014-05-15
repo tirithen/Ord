@@ -1,0 +1,3 @@
+div.col-xs-10#flash-bag
+  if !page.isPublished
+    p.alert.alert-warning This page is not published until #{ page.publishedAt.toLocaleString() }.

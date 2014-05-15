@@ -1,0 +1,9 @@
+extends layout
+
+block append resources
+  script(src="#{req.assetFingerprint('/bower_components/angular/angular.min.js')}")
+  script(src="#{req.assetFingerprint('/controllers/Page.js')}")
+
+block content
+  main.col-xs-10(role="main", data-ng-controller="Page")
+    | #{page.content}
