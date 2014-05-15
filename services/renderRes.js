@@ -1,5 +1,7 @@
 var siteSettings = require('./siteSettings');
 
+// TODO: Make this module fetch the rootPages on a time basis after a request and keep them in memory to limit the number of database lookups
+
 module.exports = function (req, res, viewName, data) {
   data = data || {};
   data.req = data.req || req;

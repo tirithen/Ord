@@ -1,10 +1,10 @@
 var models = require('../models')
   , data = {
-        siteName: null
+        siteName: 'Ord'
       , facebookAppSecret: null
       , facebookAppId: null
-      , cookieSecret: null
-      , theme: null
+      , cookieSecret: require('crypto').randomBytes(16).toString('hex')
+      , theme: 'default'
     };
 
 module.exports.load = function (callback) {

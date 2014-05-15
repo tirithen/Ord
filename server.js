@@ -3,12 +3,14 @@ var path = require('path')
   , session = require('express-session')
   , cookieParser = require('cookie-parser')
   , bodyParser = require('body-parser')
+  , staticAsset = require('static-asset')
   , serverViewEnableMultipleDirectories = require('./serverViewEnableMultipleDirectories')
   , passport = require('passport')
   , express = require('express')
   , server = express()
   , models = require('./models')
   , services = require('./services')
+  , themeName = services.siteSettings.getAll().theme
   , policies
   , controllers;
 
@@ -18,12 +20,21 @@ server.use(session({ secret: services.siteSettings.getAll().cookieSecret }));
 server.use(passport.initialize());
 server.use(passport.session());
 
+// Set static files directories
+[
+    path.join(__dirname, 'themes', themeName, 'static')
+  , path.join(__dirname, 'static')
+].forEach(function (staticDirectory) {
+  server.use(staticAsset(staticDirectory));
+  server.use(express.static(staticDirectory));
+});
+
 // Select views directory
 serverViewEnableMultipleDirectories(server);
 server.set(
     'views'
   , [
-        path.join(__dirname, 'themes', services.siteSettings.getAll().theme || 'default')
+        path.join(__dirname, 'themes', themeName, 'views')
       , path.join(__dirname, 'views')
     ]
 );

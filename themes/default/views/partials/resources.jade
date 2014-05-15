@@ -1,0 +1,7 @@
+link(rel="canonical", href="#{encodeURI(req.protocol + '://' + req.headers.host + '/' + page.url})")
+link(rel="stylesheet", href="#{req.assetFingerprint('/bower_components/bootstrap/dist/css/bootstrap.min.css')}")
+link(rel="stylesheet", href="#{req.assetFingerprint('/bower_components/bootstrap/dist/css/bootstrap-theme.min.css')}")
+style
+  | body { padding-top: 70px; }
+script(src="#{req.assetFingerprint('/bower_components/jquery/dist/jquery.min.js')}")
+script(src="#{req.assetFingerprint('/bower_components/bootstrap/dist/js/bootstrap.min.js')}")
