@@ -3,6 +3,7 @@ var path = require('path')
   , session = require('express-session')
   , cookieParser = require('cookie-parser')
   , bodyParser = require('body-parser')
+  , lessMiddleware = require('less-middleware')
   , staticAsset = require('static-asset')
   , serverViewEnableMultipleDirectories = require('./serverViewEnableMultipleDirectories')
   , passport = require('passport')
@@ -12,7 +13,8 @@ var path = require('path')
   , services = require('./services')
   , themeName = services.siteSettings.getAll().theme
   , policies
-  , controllers;
+  , controllers
+  , directories = [];
 
 server.use(bodyParser());
 server.use(cookieParser());
@@ -20,13 +22,40 @@ server.use(session({ secret: services.siteSettings.getAll().cookieSecret }));
 server.use(passport.initialize());
 server.use(passport.session());
 
-// Set static files directories
-[
-    path.join(__dirname, 'themes', themeName, 'static')
-  , path.join(__dirname, 'static')
-].forEach(function (staticDirectory) {
-  server.use(staticAsset(staticDirectory));
-  server.use(express.static(staticDirectory));
+// Set less files directories
+directories.push(path.join(__dirname, 'themes', themeName));
+directories.push(path.join(__dirname));
+directories.forEach(function (directory) {
+  server.use(lessMiddleware(
+      directory
+    , {
+          debug: process.env.NODE_ENV === 'production' ? true : false
+        , compiler: {
+            sourceMap: true
+          , once: process.env.NODE_ENV === 'production' ? true : false
+          , yuicompress: process.env.NODE_ENV === 'production' ? true : false
+        }
+    }
+  ));
+  console.log('Registering LESS files source directory ' + directory);
+});
+
+// Set static files directories (include less directories)
+directories.push(path.join(__dirname, 'themes', themeName, 'style'));
+directories.push(path.join(__dirname, 'style'));
+directories.push(path.join(__dirname, 'themes', themeName, 'static'));
+directories.push(path.join(__dirname, 'static'));
+directories.forEach(function (directory) {
+  var prefix = '/'
+    , directoryBasename = path.basename(directory);
+
+  if (directoryBasename !== 'static') {
+    prefix = '/' + directoryBasename;
+  }
+
+  server.use(staticAsset(directoryBasename, directory));
+  server.use(prefix, express.static(directory));
+  console.log('Registering static file directory ' + directory + ' at route ' + prefix);
 });
 
 // Select views directory
@@ -65,8 +94,7 @@ server.get('*', function (req, res) {
               res.status(500).send('Internal server error');
             } else {
               services.renderRes(
-                  //~ req, res, 'page'
-                  req, res, 'pageEditable'
+                  req, res, req.isAuthenticated() ? 'pageEditable' : 'page'
                 , {
                       page: page
                     , pageChildren: pageChildren
@@ -83,10 +111,7 @@ server.get('*', function (req, res) {
               res.status(404);
               services.renderRes(
                   req, res, '404'
-                , {
-                      rootPages: rootPages
-                    , page: page
-                  }
+                , { page: page }
               );
             }
           });
@@ -97,3 +122,5 @@ server.get('*', function (req, res) {
 
 // Start listening with the server
 server.listen(process.env.PORT || 2000);
+
+console.log('Web server is now listening for connections on http://localhost:' + process.env.PORT || 2000);

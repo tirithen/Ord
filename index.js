@@ -1,6 +1,9 @@
-var models = require('./models')
-  , services = require('./services')
-  , server;
+var models, services, server;
+
+console.log('Starting the Ord system...');
+
+models = require('./models');
+services = require('./services');
 
 // Load services
 services(function (err) {
