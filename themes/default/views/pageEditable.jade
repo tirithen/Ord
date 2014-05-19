@@ -6,4 +6,18 @@ block append resources
 
 block content
   main.col-xs-10(role="main", data-ng-controller="Page")
-    | #{page.content}
+    h1 Redigera dokument
+    h2 Meta
+    div.meta
+      div.form-group
+        label(for="") Title
+        input(type="text").form-control
+      div.form-group
+        label(for="") Published date
+        input(type="date").form-control
+      div.form-group
+        label(for="") Parent
+        input(type="date").form-control
+    h2 Innehåll
+    div.content
+      | #{page.content}

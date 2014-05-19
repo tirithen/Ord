@@ -1,3 +1,6 @@
 function Page($scope, $element) {
-  $element.attr('contentEditable', true);
+  var metaElement = $element.find('.meta')
+    , contentElement = $element.find('.content');
+console.log(contentElement);
+  contentElement.attr('contentEditable', true);
 }
