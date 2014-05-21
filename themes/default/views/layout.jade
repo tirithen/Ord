@@ -1,5 +1,5 @@
 doctype html
-html(data-ng-app)
+html(data-ng-app=(req.isAuthenticated() ? 'app' : undefined))
   head
     block metaTags
       include partials/metaTags

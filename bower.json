@@ -22,6 +22,8 @@
   "dependencies": {
     "bootstrap": "~3.1.1",
     "jquery": "~2.1.1",
-    "angular": "~1.2.16"
+    "angular": "~1.2.16",
+    "angular-sanitize": "~1.2.16",
+    "medium-editor": "~1.8.8"
   }
 }

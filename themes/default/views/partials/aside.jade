@@ -9,7 +9,7 @@ if page && page.breadcrumbs && page.breadcrumbs.length > 1
               li.active= breadcrumbPage.title
             else
               li
-                a(href="/#{encodeURI(breadcrumbPage.url)}")= breadcrumbPage.title
+                a(href="#{encodeURI(breadcrumbPage.url)}")= breadcrumbPage.title
 
 if pageChildren && pageChildren.length > 0
   aside.col-xs-2.pull-right
@@ -17,4 +17,4 @@ if pageChildren && pageChildren.length > 0
         each pageChild in pageChildren
           if pageChild.isPublished && pageChild.title
             li
-              a(href="/#{encodeURI(pageChild.url)}")= pageChild.title
+              a(href="#{encodeURI(pageChild.url)}")= pageChild.title

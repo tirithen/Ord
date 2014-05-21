@@ -1,23 +1,38 @@
 extends layout
 
 block append resources
-  script(src="#{req.assetFingerprint('/bower_components/angular/angular.min.js')}")
-  script(src="#{req.assetFingerprint('/controllers/Page.js')}")
+  //- AngularJS
+  script(src="#{req.assetFingerprint('/bower_components/angular/angular.' + (process.env.NODE_ENV === 'production' ? 'min.' : '') + 'js')}")
+  script(src="#{req.assetFingerprint('/bower_components/angular-sanitize/angular-sanitize.' + (process.env.NODE_ENV === 'production' ? 'min.' : '') + 'js')}")
+
+  //- Medium editor
+  script(src="#{req.assetFingerprint('/bower_components/medium-editor/dist/js/medium-editor.' + (process.env.NODE_ENV === 'production' ? 'min.' : '') + 'js')}")
+  link(rel="stylesheet", href="#{req.assetFingerprint('/bower_components/medium-editor/dist/css/medium-editor.' + (process.env.NODE_ENV === 'production' ? 'min.' : '') + 'css')}")
+  link(rel="stylesheet", href="#{req.assetFingerprint('/bower_components/medium-editor/dist/css/themes/bootstrap.' + (process.env.NODE_ENV === 'production' ? 'min.' : '') + 'css')}")
+
+  //- Ord scripts
+  script(src="#{req.assetFingerprint('/themes/default/static/app.js')}")
+  script(src="#{req.assetFingerprint('/themes/default/static/directives/contenteditable.js')}")
+  script(src="#{req.assetFingerprint('/themes/default/static/controllers/PageEditor.js')}")
 
 block content
-  main.col-xs-10(role="main", data-ng-controller="Page")
-    h1 Redigera dokument
-    h2 Meta
-    div.meta
+  div(ng-controller="PageEditor", ng-cloak)
+    input(id="pageData_id", type="hidden", ng-model="data._id", value="#{ page._id }")
+
+    main.col-xs-10(role="main", contenteditable, ng-model="data.content")
+      h1 #{ page.title || 'Page heading' }
+
+    div.col-xs-5
+      p.text-info Select some text and click on toolbar icon to set style for that text
+
+    div(ng-class="state === 'metaDataEditor' ? 'open' : 'closed'", ng-show="state !== 'pageView'")#meta.well.col-xs-4
+      button(ng-click="state = (state === 'metaDataEditor' ? 'pageEditor' : 'metaDataEditor')").toggle.btn.btn-default Meta data
       div.form-group
-        label(for="") Title
-        input(type="text").form-control
+        label(for="pageDataTitle") Title
+        input(id="pageDataTitle", type="text", required, ng-model="data.title").form-control
       div.form-group
-        label(for="") Published date
-        input(type="date").form-control
+        label(for="pageDataPublishAt") Publish
+        input(id="pageDataPublishAt", type="datetime-local", required, ng-model="data.publishAt").form-control
       div.form-group
-        label(for="") Parent
-        input(type="date").form-control
-    h2 Innehåll
-    div.content
-      | #{page.content}
+        label(for="pageDataParent") Parent page
+        select(id="pageDataParent", ng-options="parentOption._id as parentOption.url for parentOption in parentOptions", ng-model="data.parent").form-control

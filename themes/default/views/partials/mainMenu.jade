@@ -13,20 +13,20 @@ div.navbar.navbar-inverse.navbar-fixed-top(role="navigation")
           if rootPage.isPublished && rootPage.title
             if page.breadcrumbs && page.breadcrumbs[0] && page.breadcrumbs[0]._id.toString() === rootPage._id.toString()
               li(class="active")
-                a(href="/#{encodeURI(rootPage.url)}")= rootPage.title
+                a(href="#{encodeURI(rootPage.url)}")= rootPage.title
             else
               li
-                a(href="/#{encodeURI(rootPage.url)}")= rootPage.title
+                a(href="#{encodeURI(rootPage.url)}")= rootPage.title
       ul.nav.navbar-nav.pull-right
         //- TODO: Add active state for current page li
-        if req.user
+        if req.isAuthenticated()
           li
             a(href="/administration/page/create") Create a new Page
           li
             a(href="/administration/siteSettings") Site settings
           li
             a(href="/profile")
-              img(src="#{req.user.image}", height="16").img-circle
+              //- img(src="#{req.user.image}", height="16").img-circle
               | &nbsp;
               span= req.user.name
           li

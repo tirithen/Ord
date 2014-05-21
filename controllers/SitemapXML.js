@@ -2,7 +2,7 @@ var services = require('../services');
 
 module.exports = {
     'GET /sitemap.xml': function (req, res) {
-      services.findAllPages(function (err, pages) {
+      services.findAllPages('_id title url isPublic updatedAt', function (err, pages) {
         if (err) {
           console.error(err);
           res.status(500).send('Internal server error');

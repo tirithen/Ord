@@ -1,4 +1,5 @@
 var path = require('path')
+  , fs = require('fs')
   , async = require('async')
   , session = require('express-session')
   , cookieParser = require('cookie-parser')
@@ -16,6 +17,7 @@ var path = require('path')
   , controllers
   , directories = [];
 
+server.set('case sensitive routing', true);
 server.use(bodyParser());
 server.use(cookieParser());
 server.use(session({ secret: services.siteSettings.getAll().cookieSecret }));
@@ -23,7 +25,7 @@ server.use(passport.initialize());
 server.use(passport.session());
 
 // Set less files directories
-directories.push(path.join(__dirname, 'themes', themeName));
+directories = [];
 directories.push(path.join(__dirname));
 directories.forEach(function (directory) {
   server.use(lessMiddleware(
@@ -40,20 +42,29 @@ directories.forEach(function (directory) {
   console.log('Registering LESS files source directory ' + directory);
 });
 
-// Set static files directories (include less directories)
-directories.push(path.join(__dirname, 'themes', themeName, 'style'));
-directories.push(path.join(__dirname, 'style'));
-directories.push(path.join(__dirname, 'themes', themeName, 'static'));
+// Set static files directories (include less and static directories from themes)
+directories = [];
+fs.readdirSync(path.join(__dirname, 'themes')).forEach(function (themeName) {
+  var themeUrl = path.join('themes', themeName)
+    , themeDirectory = path.join(__dirname, themeUrl);
+
+  [ 'style', 'static' ].forEach(function (subDirectory) {
+    directories.push([
+        path.join(themeUrl, subDirectory)
+      , path.join(themeDirectory, subDirectory)
+    ]);
+  });
+});
 directories.push(path.join(__dirname, 'static'));
 directories.forEach(function (directory) {
-  var prefix = '/'
-    , directoryBasename = path.basename(directory);
+  var prefix = Array.isArray(directory) ? path.join('/', directory[0]) : '/'
+    , directoryBasename = Array.isArray(directory) ? path.basename(directory[1]) : path.basename(directory);
 
-  if (directoryBasename !== 'static') {
-    prefix = '/' + directoryBasename;
+  if (Array.isArray(directory)) {
+    directory = directory[1];
   }
 
-  server.use(staticAsset(directoryBasename, directory));
+  server.use(staticAsset(directory));
   server.use(prefix, express.static(directory));
   console.log('Registering static file directory ' + directory + ' at route ' + prefix);
 });

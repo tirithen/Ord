@@ -1,3 +1,5 @@
+// TODO: rename all variables called page(s) to entity/entities
+
 var models = require('../models')
   , services = require('../services')
   , modelName = ''
@@ -9,14 +11,27 @@ var models = require('../models')
 
 function addListAction(controller, model) {
   controller['GET /api/v1/' + model.modelName] = function (req, res) {
-    model.find({}, model.listSelectFields || '_id', function (err, pages) {
-      if (err) {
-        res.status(500);
-        services.sendJSON(res);
-      } else {
-        services.sendJSON(res, pages);
-      }
-    });
+    var listSelectFields = req && req.query.fields ? req.query.fields : model.listSelectFields || '_id updatedAt';
+
+    if (model.listMethod instanceof Function) {
+      model.listMethod(listSelectFields, function (err, pages) {
+        if (err) {
+          res.status(500);
+          services.sendJSON(res);
+        } else {
+          services.sendJSON(res, pages);
+        }
+      });
+    } else {
+      model.find({}, listSelectFields, function (err, pages) {
+        if (err) {
+          res.status(500);
+          services.sendJSON(res);
+        } else {
+          services.sendJSON(res, pages);
+        }
+      });
+    }
   };
 }
 

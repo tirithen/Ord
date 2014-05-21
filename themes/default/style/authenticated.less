@@ -1,0 +1,44 @@
+@import "variables";
+
+.shadow {
+  box-shadow: 0 0 50px #555;
+}
+
+.noShadow {
+  box-shadow: none;
+}
+
+body {
+  overflow-x: hidden;
+}
+
+main {
+  margin-bottom: @padding-base-vertical;
+}
+
+#meta {
+  .noShadow;
+  transition: margin 0.25s, box-shadow 0.1s;
+  position: absolute;
+
+  &.closed {
+    margin-left: 100%;
+  }
+
+  &.open {
+    .shadow;
+    margin-left: 2/3 * 100%;
+  }
+
+  button.toggle {
+    position: absolute;
+    left: -75px;
+    width: 75px;
+    height: 25px;
+    top: 0;
+  }
+}
+
+*[contenteditable] {
+  outline: 3px dashed @brand-primary;
+}

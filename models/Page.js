@@ -22,6 +22,11 @@ module.exports = function (mongoose) {
     return this.publishedAt < new Date();
   });
 
+  schema.virtual('isPublic').get(function () {
+    // TODO: Handle permissions here
+    return this.isPublished;
+  });
+
   schema.virtual('breadcrumbs').get(function () {
     var breadcrumbs = []
       , page = this;
@@ -35,7 +40,7 @@ module.exports = function (mongoose) {
   });
 
   schema.virtual('url').get(function () {
-    return this.breadcrumbs.map(function (breadcumbPage) {
+    return '/' + this.breadcrumbs.map(function (breadcumbPage) {
       return breadcumbPage.title
     }).join('/');
   });
@@ -47,7 +52,42 @@ module.exports = function (mongoose) {
 
   model = mongoose.model('Page', schema);
 
-  model.listSelectFields = '_id title';
+  model.listSelectFields = '_id title url updatedAt';
+
+  model.listMethod = function (listSelectFields, callback) {
+    var fieldsFilter = listSelectFields ? listSelectFields : model.listSelectFields.trim().split(/\s+/);
+
+    model
+      .find()
+      .populate('parent')
+      .exec(function (err, pages) {
+        if (err) {
+          callback(err);
+        } else {
+          model.populate(pages, { path: 'parent.parent' }, function (err, pages) {
+            if (fieldsFilter.length > 0) {
+              pages = pages.map(function (page) {
+                var data = {}, key = '';
+
+                for(key in page) {
+                  if (fieldsFilter.indexOf(key) !== -1) {
+                    if (key === 'parent' && page[key]) {
+                      data[key] = page[key]._id;
+                    } else {
+                      data[key] = page[key];
+                    }
+                  }
+                }
+
+                return data;
+              });
+            }
+
+            callback(err, pages);
+          });
+        }
+      });
+  };
 
   return model;
 };
