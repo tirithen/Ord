@@ -1,7 +1,14 @@
 extends layout
 
+include mixins/user
+
 block content
   main.col-xs-12.col-sm-10(role="main")!= page.content
+
+  if page.createdBy
+    +user(page.createdBy)
+  if page.updatedBy
+    +user(page.updatedBy)
 
   if req.isAuthenticated()
     div.col-xs-12.col-sm-10

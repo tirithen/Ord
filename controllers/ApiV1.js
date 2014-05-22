@@ -46,24 +46,26 @@ function addShowAction(controller, model) {
       showSelectFields = showSelectFields.trim().split(/\s+/);
     }
 
-    model.findById(req.params.id, function (err, page) {
-      if (err) {
-        res.status(500);
-        services.sendJSON(res);
-      } else {
-        if (showSelectFields) {
-          for(key in page) {
-            if (showSelectFields.indexOf(key) !== -1) {
-              data[key] = page[key];
-            }
-          }
+    model.findById(req.params.id)
+      .populate('createdBy updatedBy')
+      .exec(function (err, page) {
+        if (err) {
+          res.status(500);
+          services.sendJSON(res);
         } else {
-          data = page;
-        }
+          if (showSelectFields) {
+            for(key in page) {
+              if (showSelectFields.indexOf(key) !== -1) {
+                data[key] = page[key];
+              }
+            }
+          } else {
+            data = page;
+          }
 
-        services.sendJSON(res, data);
-      }
-    });
+          services.sendJSON(res, data);
+        }
+      });
   };
 }
 

@@ -16,7 +16,7 @@ module.exports = function (urlQuery, callback) {
 
   models.Page
     .find(query)
-    .populate('parent')
+    .populate('parent createdBy updatedBy')
     .exec(function (err, pages) {
       var pageResult;
 
