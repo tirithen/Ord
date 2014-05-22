@@ -105,7 +105,7 @@ server.get('*', function (req, res) {
               res.status(500).send('Internal server error');
             } else {
               services.renderRes(
-                  req, res, req.isAuthenticated() ? 'pageEditable' : 'page'
+                  req, res, (req.isAuthenticated() && req.query.action === 'edit') ? 'pageEditable' : 'page'
                 , {
                       page: page
                     , pageChildren: pageChildren
