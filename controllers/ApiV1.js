@@ -1,4 +1,5 @@
 // TODO: rename all variables called page(s) to entity/entities
+// TODO: add createdby and updatedby
 
 var models = require('../models')
   , services = require('../services')
