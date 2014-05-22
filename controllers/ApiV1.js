@@ -79,26 +79,48 @@ function addUpsertAction(controller, model) {
       model.findById(id, function (err, page) {
         var propertyName = '';
 
-        for(propertyName in req.body) {
-          if (req.body.hasOwnProperty(propertyName)) {
-            page[propertyName] = req.body[propertyName];
+        if (err) {
+          res.status(500)
+          services.sendJSON(res, err);
+        } else if(page) {
+          for(propertyName in req.body) {
+            if (req.body.hasOwnProperty(propertyName)) {
+
+              page[propertyName] = req.body[propertyName];
+            }
           }
+
+          page.updatedBy = req.user;
+
+          page.save(function (err) {
+            if (err) {
+              console.error(err);
+              res.status(400);
+              services.sendJSON(res, err);
+            } else {
+              res.status(200);
+              services.sendJSON(res, page);
+            }
+          });
+        } else { // TODO: do not repeat yourself, handle new pages in ONE place
+          page = new models.Page(req.body);
+
+          page.createdBy = req.user;
+          page.updatedBy = req.user;
+
+          page.save(function (err) {
+            if (err) {
+              console.error(err);
+              res.status(400);
+              services.sendJSON(res, err);
+            } else {
+              res.status(201);
+              services.sendJSON(res, page);
+            }
+          });
         }
-
-        page.updatedBy = req.user;
-
-        page.save(function (err) {
-          if (err) {
-            console.error(err);
-            res.status(400);
-            services.sendJSON(res, err);
-          } else {
-            res.status(200);
-            services.sendJSON(res, page);
-          }
-        });
       });
-    } else {
+    } else { // TODO: do not repeat yourself, handle new pages in ONE place
       page = new models.Page(req.body);
 
       page.createdBy = req.user;
