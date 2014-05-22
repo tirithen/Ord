@@ -1,5 +1,5 @@
 var models = require('../models')
-  , data = {
+  , data = { // Set default values
         siteName: 'Ord'
       , facebookAppSecret: null
       , facebookAppId: null
@@ -9,10 +9,21 @@ var models = require('../models')
 
 module.exports.load = function (callback) {
   models.Setting.find({}, function (err, settings) {
+    var key = '', updatedKeys = [];
+
     if (!err && Array.isArray(settings)) {
+      // Update settings from database
       settings.forEach(function (setting) {
         data[setting.key] = setting.value;
+        updatedKeys.push(setting.key);
       });
+
+      // Save default values to database for all settings that was not in there
+      for(key in data) {
+        if (data.hasOwnProperty(key) && updatedKeys.indexOf(key) === -1 ) {
+          module.exports.set(key, data[key]);
+        }
+      }
     }
 
     callback(err);
