@@ -18,22 +18,22 @@ block append resources
 
 block content
   div(ng-controller="PageEditor", ng-cloak)
-    div(ng-controller="AlertBag").col-xs-10
+    div(ng-controller="AlertBag").col-xs-12.col-sm-10
       div(ng-repeat="alert in alerts", class="alert alert-{{ alert.type }}", style="animation-duration: {{ (alert.timeout || 0) / 1000 }}s;") {{ alert.message }}
         button(aria-hidden="true", ng-click="closeAlert($index)").close ×
 
     form(novalidate, ng-submit="submit()", name="pageForm").css-form
       input(id="pageData_id", type="hidden", ng-model="data._id", value="#{ page._id }")
 
-      main.col-xs-10(role="main", contenteditable, required, minlength="1", ng-model="data.content")
+      main.col-xs-12.col-sm-10(role="main", contenteditable, required, minlength="1", ng-model="data.content")
         h1 #{ page.title || 'Page heading' }
 
-      div.col-xs-10
+      div.col-xs-12.col-sm-10
         p.text-info Select some text and click on toolbar icon to set style for that text
 
       aside(ng-class="state === 'metaDataEditor' ? 'open' : 'closed'", ng-show="state !== 'pageView'")#meta.well.col-xs-10.col-sm-6.col-md-4
         h1.h3 Meta data for the page
-        button(type="button", ng-click="state = (state === 'metaDataEditor' ? 'pageEditor' : 'metaDataEditor')").toggle.btn.btn-default Meta data
+        button(type="button", ng-click="state = (state === 'metaDataEditor' ? 'pageEditor' : 'metaDataEditor')").well.toggle Meta data
         div.form-group
           label(for="pageDataTitle") Title
           input(id="pageDataTitle", type="text", required, minlength="1", ng-model="data.title", value="#{ page.title }").form-control
@@ -49,5 +49,5 @@ block content
               input(type="checkbox", id="pageDataShowInMenu", ng-model="data.showInMenu", checked="( page.showInMenu ? 'true' : undefined )")
               | Include in menu
 
-      div.col-xs-10
+      div.col-xs-12.col-sm-10
         input(type="submit", value="Save", ng-disabled="pageForm.$invalid || submissionState === 'submitting' || pageForm.$pristine").btn.btn-primary

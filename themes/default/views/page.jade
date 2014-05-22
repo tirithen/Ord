@@ -1,8 +1,8 @@
 extends layout
 
 block content
-  main.col-xs-10(role="main")!= page.content
+  main.col-xs-12.col-sm-10(role="main")!= page.content
 
   if req.isAuthenticated()
-    div.col-xs-10
+    div.col-xs-12.col-sm-10
       a(href="#{ page.url + '?action=edit' }").btn.btn-primary Edit this page

@@ -1,7 +1,7 @@
 @import "variables";
 
 .shadow {
-  box-shadow: 0 0 30px #555;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
 }
 
 .noShadow {
@@ -18,25 +18,67 @@ main {
 
 #meta {
   .noShadow;
-  transition: margin 0.25s, box-shadow 0.1s;
+  transition: margin 0.25s, box-shadow 0.5s, opacity 0.25s;
   position: absolute;
   z-index: 2;
+  opacity: 0.5;
+
+  &:hover {
+    .shadow;
+    opacity: 1;
+  }
 
   &.closed {
     margin-left: 100%;
+
+    &:hover {
+      margin-left: 98%;
+    }
   }
 
   &.open {
     .shadow;
     margin-left: 2/12 * 100%;
+    opacity: 1;
+
+    button.toggle {
+      .shadow;
+    }
+  }
+
+  & > * {
+    position: relative;
+    z-index: 2;
   }
 
   button.toggle {
+    .noShadow;
+    transition: color 0.25s, box-shadow .5s, opacity 0.25s;
     position: absolute;
-    left: -75px;
+    z-index: 1;
+    left: -73px;
     width: 75px;
-    height: 25px;
-    top: 0;
+    top: 10px;
+    border-right: none;
+    padding: 4px;
+
+    &:hover {
+      .shadow;
+      color: @link-hover-color;
+    }
+
+    &:after {
+      background: @well-bg;
+      border-radius: 3px;
+      content: ".";
+      font-size: 0;
+      color: transparent;
+      height: 70px;
+      position: absolute;
+      right: -38px;
+      top: -11px;
+      width: 40px;
+    }
   }
 }
 
@@ -73,6 +115,7 @@ input, select, textarea, *[contenteditable] {
   animation-name: alertCountdown;
   animation-timing-function: linear;
   background-repeat: no-repeat;
+  padding: 5px;
 
   &.alert-success {
     background-image: linear-gradient(to right, lighten(@alert-success-bg, 2%) 100%, rgba(0, 0, 0, 0) 100%);
@@ -88,6 +131,11 @@ input, select, textarea, *[contenteditable] {
 
   &.alert-info {
     background-image: linear-gradient(to right, lighten(@alert-info-bg, 2%) 100%, rgba(0, 0, 0, 0) 100%);
+  }
+
+  button.close {
+    margin: -6px -5px 0 0;
+    padding: 3px 10px 7px;
   }
 }
 
