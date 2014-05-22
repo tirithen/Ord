@@ -31,7 +31,7 @@ block content
       div.col-xs-10
         p.text-info Select some text and click on toolbar icon to set style for that text
 
-      aside(ng-class="state === 'metaDataEditor' ? 'open' : 'closed'", ng-show="state !== 'pageView'")#meta.well.col-xs-4
+      aside(ng-class="state === 'metaDataEditor' ? 'open' : 'closed'", ng-show="state !== 'pageView'")#meta.well.col-xs-10.col-md-4
         h1.h3 Meta data for the page
         button(type="button", ng-click="state = (state === 'metaDataEditor' ? 'pageEditor' : 'metaDataEditor')").toggle.btn.btn-default Meta data
         div.form-group

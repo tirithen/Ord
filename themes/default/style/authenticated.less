@@ -20,6 +20,7 @@ main {
   .noShadow;
   transition: margin 0.25s, box-shadow 0.1s;
   position: absolute;
+  z-index: 2;
 
   &.closed {
     margin-left: 100%;
@@ -27,7 +28,7 @@ main {
 
   &.open {
     .shadow;
-    margin-left: 2/3 * 100%;
+    margin-left: 2/12 * 100%;
   }
 
   button.toggle {
@@ -36,6 +37,15 @@ main {
     width: 75px;
     height: 25px;
     top: 0;
+  }
+}
+
+@media (min-width: @screen-md-min) {
+  #meta {
+    &.open {
+      .shadow;
+      margin-left: 8/12 * 100%;
+    }
   }
 }
 
