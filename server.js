@@ -2,6 +2,7 @@ var path = require('path')
   , fs = require('fs')
   , async = require('async')
   , session = require('express-session')
+  , MongoStore = require('connect-mongo')(session)
   , cookieParser = require('cookie-parser')
   , bodyParser = require('body-parser')
   , lessMiddleware = require('less-middleware')
@@ -20,7 +21,16 @@ var path = require('path')
 server.set('case sensitive routing', true);
 server.use(bodyParser());
 server.use(cookieParser());
-server.use(session({ secret: services.siteSettings.getAll().cookieSecret }));
+server.use(session({
+    name: 'Ord'
+  , secret: services.siteSettings.getAll().cookieSecret
+  , cookie: {
+        maxAge: 2628000000 // Store cookies for one month maximum
+    }
+  , store: new MongoStore({
+        mongoose_connection: models.mongoose.connections[0]
+    })
+}));
 server.use(passport.initialize());
 server.use(passport.session());
 
