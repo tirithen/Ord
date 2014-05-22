@@ -10,7 +10,7 @@ div.navbar.navbar-inverse.navbar-fixed-top(role="navigation")
     div.collapse.navbar-collapse
       ul.nav.navbar-nav
         each rootPage in rootPages
-          if rootPage.isPublished && rootPage.title
+          if rootPage.showInMenu && rootPage.isPublished && rootPage.title
             if page.breadcrumbs && page.breadcrumbs[0] && page.breadcrumbs[0]._id.toString() === rootPage._id.toString()
               li(class="active")
                 a(href="#{encodeURI(rootPage.url)}")= rootPage.title

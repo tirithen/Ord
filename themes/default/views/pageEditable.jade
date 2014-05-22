@@ -13,26 +13,41 @@ block append resources
   //- Ord scripts
   script(src="#{req.assetFingerprint('/themes/default/static/app.js')}")
   script(src="#{req.assetFingerprint('/themes/default/static/directives/contenteditable.js')}")
+  script(src="#{req.assetFingerprint('/themes/default/static/controllers/AlertBag.js')}")
   script(src="#{req.assetFingerprint('/themes/default/static/controllers/PageEditor.js')}")
 
 block content
   div(ng-controller="PageEditor", ng-cloak)
-    input(id="pageData_id", type="hidden", ng-model="data._id", value="#{ page._id }")
+    div(ng-controller="AlertBag").col-xs-10
+      div(ng-repeat="alert in alerts", class="alert alert-{{ alert.type }}", style="animation-duration: {{ (alert.timeout || 0) / 1000 }}s;") {{ alert.message }}
+        button(aria-hidden="true", ng-click="closeAlert($index)").close ×
 
-    main.col-xs-10(role="main", contenteditable, ng-model="data.content")
-      h1 #{ page.title || 'Page heading' }
+    form(novalidate, ng-submit="submit()", name="pageForm").css-form
+      input(id="pageData_id", type="hidden", ng-model="data._id", value="#{ page._id }")
 
-    div.col-xs-5
-      p.text-info Select some text and click on toolbar icon to set style for that text
+      main.col-xs-10(role="main", contenteditable, required, minlength="1", ng-model="data.content")
+        h1 #{ page.title || 'Page heading' }
 
-    div(ng-class="state === 'metaDataEditor' ? 'open' : 'closed'", ng-show="state !== 'pageView'")#meta.well.col-xs-4
-      button(ng-click="state = (state === 'metaDataEditor' ? 'pageEditor' : 'metaDataEditor')").toggle.btn.btn-default Meta data
-      div.form-group
-        label(for="pageDataTitle") Title
-        input(id="pageDataTitle", type="text", required, ng-model="data.title").form-control
-      div.form-group
-        label(for="pageDataPublishAt") Publish
-        input(id="pageDataPublishAt", type="datetime-local", required, ng-model="data.publishAt").form-control
-      div.form-group
-        label(for="pageDataParent") Parent page
-        select(id="pageDataParent", ng-options="parentOption._id as parentOption.url for parentOption in parentOptions", ng-model="data.parent").form-control
+      div.col-xs-10
+        p.text-info Select some text and click on toolbar icon to set style for that text
+
+      aside(ng-class="state === 'metaDataEditor' ? 'open' : 'closed'", ng-show="state !== 'pageView'")#meta.well.col-xs-4
+        h1.h3 Meta data for the page
+        button(type="button", ng-click="state = (state === 'metaDataEditor' ? 'pageEditor' : 'metaDataEditor')").toggle.btn.btn-default Meta data
+        div.form-group
+          label(for="pageDataTitle") Title
+          input(id="pageDataTitle", type="text", required, minlength="1", ng-model="data.title", value="#{ page.title }").form-control
+        div.form-group
+          label(for="pageDataPublishedAt") Published
+          input(id="pageDataPublishedAt", type="datetime-local", required, minlength="1", ng-model="data.publishedAt", value="#{ page.publishedAt }").form-control
+        div.form-group
+          label(for="pageDataParent") Parent page
+          select(id="pageDataParent", ng-options="parentOption._id as parentOption.url for parentOption in parentOptions", ng-model="data.parent").form-control
+        div.form-group
+          div.checkbox
+            label(for="pageDataShowInMenu")
+              input(type="checkbox", id="pageDataShowInMenu", ng-model="data.showInMenu", checked="( page.showInMenu ? 'true' : undefined )")
+              | Include in menu
+
+      div.col-xs-10
+        input(type="submit", value="Save", ng-disabled="pageForm.$invalid || submissionState === 'submitting' || pageForm.$pristine").btn.btn-primary

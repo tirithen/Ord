@@ -6,8 +6,8 @@ module.exports = function (mongoose) {
   schema = new mongoose.Schema({
       title: { type: String, required: true, trim: true }
     , content: { type: String, trim: true }
-    , parent: mongoose.Schema.Types.ObjectId
     , parent: {type: mongoose.Schema.Types.ObjectId, ref: 'Page' }
+    , showInMenu: { type: Boolean, default: true, required: true }
     , publishedAt: Date
     , updatedAt: { type: Date, default: Date.now }
     , createdAt: { type: Date, default: Date.now }
@@ -53,9 +53,10 @@ module.exports = function (mongoose) {
   model = mongoose.model('Page', schema);
 
   model.listSelectFields = '_id title url updatedAt';
+  model.showSelectFields = '_id title content parent showInMenu publishedAt updatedAt createdAt isPublished isPublic url';
 
   model.listMethod = function (listSelectFields, callback) {
-    var fieldsFilter = listSelectFields ? listSelectFields : model.listSelectFields.trim().split(/\s+/);
+    var fieldsFilter = (listSelectFields ? listSelectFields : model.listSelectFields).trim().split(/\s+/);
 
     model
       .find()

@@ -1,5 +1,4 @@
 link(rel="stylesheet", href="#{req.assetFingerprint('/bower_components/bootstrap/dist/css/bootstrap.' + (process.env.NODE_ENV === 'production' ? 'min.' : '') + 'css')}")
-link(rel="stylesheet", href="#{req.assetFingerprint('/bower_components/bootstrap/dist/css/bootstrap-theme.' + (process.env.NODE_ENV === 'production' ? 'min.' : '') + 'css')}")
 link(rel="stylesheet", href="#{req.assetFingerprint('/themes/default/style/main.css')}")
 if req.isAuthenticated()
   link(rel="stylesheet", href="#{req.assetFingerprint('/themes/default/style/authenticated.css')}")

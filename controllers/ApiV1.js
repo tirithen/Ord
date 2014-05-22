@@ -37,12 +37,30 @@ function addListAction(controller, model) {
 
 function addShowAction(controller, model) {
   controller['GET /api/v1/' + model.modelName + '/:id'] = function (req, res) {
+    var showSelectFields = req && req.query.fields ? req.query.fields : model.showSelectFields || null
+      , data = {}
+      , key = '';
+
+    if (showSelectFields) {
+      showSelectFields = showSelectFields.trim().split(/\s+/);
+    }
+
     model.findById(req.params.id, function (err, page) {
       if (err) {
         res.status(500);
         services.sendJSON(res);
       } else {
-        services.sendJSON(res, page);
+        if (showSelectFields) {
+          for(key in page) {
+            if (showSelectFields.indexOf(key) !== -1) {
+              data[key] = page[key];
+            }
+          }
+        } else {
+          data = page;
+        }
+
+        services.sendJSON(res, data);
       }
     });
   };

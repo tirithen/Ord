@@ -1,7 +1,7 @@
 extends layout
 
 block content
-  main.col-xs-10(role="main", data-ng-controller="Page")
+  main.col-xs-10(role="main")
     if page
       | #{page.content}
     else
@@ -10,5 +10,7 @@ block content
           strong Page not found!
           | &nbsp;The page you requested could not be found.&nbsp;
           a(href="/") Return to start page
-    p
-      button(data-ng-).btn.btn-default Create a new page here
+
+    if req.isAuthenticated()
+      p
+        a(href="#{ req.url + '?action=new' }").btn.btn-primary Create a new page here

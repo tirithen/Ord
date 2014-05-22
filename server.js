@@ -98,7 +98,7 @@ server.get('*', function (req, res) {
         if (err) {
           console.error(err);
           res.status(500).send('Internal server error');
-        } else if (page && page.isPublished) {
+        } else if (page && (req.isAuthenticated() || page.isPublic)) {
           services.findPageChildren(page, function (err, pageChildren) {
             if (err) {
               console.error(err);
@@ -113,6 +113,14 @@ server.get('*', function (req, res) {
               );
             }
           });
+        } else if(!page && req.query.action === 'new' && req.isAuthenticated()) {
+          page = new models.Page();
+          page.title = path.basename(req._parsedUrl.pathname);
+          page.publishedAt = (new Date()).toISOString();
+          services.renderRes(
+              req, res, 'pageEditable'
+            , { page: page }
+          );
         } else {
           services.findPageByUrl('/404', function (err, page) {
             if (err) {

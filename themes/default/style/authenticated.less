@@ -1,7 +1,7 @@
 @import "variables";
 
 .shadow {
-  box-shadow: 0 0 50px #555;
+  box-shadow: 0 0 30px #555;
 }
 
 .noShadow {
@@ -39,6 +39,45 @@ main {
   }
 }
 
-*[contenteditable] {
-  outline: 3px dashed @brand-primary;
+input, select, textarea, *[contenteditable] {
+  &.ng-invalid {
+    box-shadow: 0 0 2px @brand-danger;
+  }
+
+  &.ng-valid {
+    box-shadow: 0 0 2px @brand-success;
+  }
+}
+
+.alert {
+  animation-duration: 1s;
+  animation-name: alertCountdown;
+  animation-timing-function: linear;
+  background-repeat: no-repeat;
+
+  &.alert-success {
+    background-image: linear-gradient(to right, lighten(@alert-success-bg, 2%) 100%, rgba(0, 0, 0, 0) 100%);
+  }
+
+  &.alert-warning {
+    background-image: linear-gradient(to right, lighten(@alert-warning-bg, 2%) 100%, rgba(0, 0, 0, 0) 100%);
+  }
+
+  &.alert-danger {
+    background-image: linear-gradient(to right, lighten(@alert-danger-bg, 2%) 100%, rgba(0, 0, 0, 0) 100%);
+  }
+
+  &.alert-info {
+    background-image: linear-gradient(to right, lighten(@alert-info-bg, 2%) 100%, rgba(0, 0, 0, 0) 100%);
+  }
+}
+
+@keyframes alertCountdown {
+  from {
+    background-size: 100% 100%;
+  }
+
+  to {
+    background-size: 0% 100%;
+  }
 }
