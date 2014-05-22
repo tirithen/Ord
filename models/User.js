@@ -10,6 +10,8 @@ module.exports = function (mongoose) {
     , facebookId: { type: String, trim: true, unique: true }
     , updatedAt: { type: Date, default: Date.now }
     , createdAt: { type: Date, default: Date.now }
+    , updatedBy: {type: mongoose.Schema.Types.ObjectId, ref: 'User' }
+    , createdBy: {type: mongoose.Schema.Types.ObjectId, ref: 'User' }
   });
 
   schema.pre('save', function (next) {

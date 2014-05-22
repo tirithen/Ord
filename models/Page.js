@@ -11,6 +11,8 @@ module.exports = function (mongoose) {
     , publishedAt: Date
     , updatedAt: { type: Date, default: Date.now }
     , createdAt: { type: Date, default: Date.now }
+    , updatedBy: {type: mongoose.Schema.Types.ObjectId, ref: 'User' }
+    , createdBy: {type: mongoose.Schema.Types.ObjectId, ref: 'User' }
   });
 
   schema.pre('save', function (next) {

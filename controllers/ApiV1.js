@@ -85,6 +85,8 @@ function addUpsertAction(controller, model) {
           }
         }
 
+        page.updatedBy = req.user;
+
         page.save(function (err) {
           if (err) {
             console.error(err);
@@ -98,6 +100,10 @@ function addUpsertAction(controller, model) {
       });
     } else {
       page = new models.Page(req.body);
+
+      page.createdBy = req.user;
+      page.updatedBy = req.user;
+
       page.save(function (err) {
         if (err) {
           console.error(err);
