@@ -1,7 +1,30 @@
 var mongoose = require('mongoose')
-  , fs = require('fs');
+  , fs = require('fs')
+  , connectionString
+  , key = '';
 
-mongoose.connect(process.env.MONGO_CONNECTION_STRING || 'mongodb://localhost/Ord');
+// Figure out the connection string
+if (process.env.MONGO_CONNECTION_STRING_ENV_KEY) {
+  connectionString = process.env[process.env.MONGO_CONNECTION_STRING_ENV_KEY];
+} else if(process.env.MONGO_CONNECTION_STRING) {
+  connectionString = process.env.MONGO_CONNECTION_STRING;
+} else {
+  for(key in process.env) {
+    if (
+      process.env.hasOwnProperty(key) &&
+      process.env[key].match(/^\s*mongodb\:\/\//i)
+    ) {
+      connectionString = process.env[key];
+      break;
+    }
+  }
+
+  if (!connectionString) {
+    connectionString = 'mongodb://localhost/Ord';
+  }
+}
+
+mongoose.connect(connectionString);
 
 module.exports.mongoose = mongoose;
 
