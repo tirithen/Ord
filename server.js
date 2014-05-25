@@ -41,7 +41,7 @@ directories.forEach(function (directory) {
   server.use(lessMiddleware(
       directory
     , {
-          debug: process.env.NODE_ENV === 'production' ? true : false
+          debug: process.env.NODE_ENV === 'production' ? false : true
         , compiler: {
             sourceMap: true
           , once: process.env.NODE_ENV === 'production' ? true : false
