@@ -6,11 +6,11 @@ var passport = require('passport')
 
 if (!allSiteSettings.facebookAppId || !allSiteSettings.facebookAppSecret) {
   if (!allSiteSettings.facebookAppId) {
-    console.error('Could not setup Facebook authentication as the setting "facebookAppId" is missing.');
+    console.warn('Could not setup Facebook authentication as the setting "facebookAppId" is missing.');
   }
 
   if (!allSiteSettings.facebookAppId) {
-    console.error('Could not setup Facebook authentication as the setting "facebookAppSecret" is missing.');
+    console.warn('Could not setup Facebook authentication as the setting "facebookAppSecret" is missing.');
   }
 } else {
   passport.serializeUser(function(user, done) {
