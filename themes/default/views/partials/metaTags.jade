@@ -1,4 +1,5 @@
 meta(charset="utf-8")
 title= page && page.title ? page.title + ' - ' + siteSettings.siteName : siteSettings.siteName
-link(rel="canonical", href="#{encodeURI(req.protocol + '://' + req.headers.host + '/' + page.url)}")
+if page
+  link(rel="canonical", href="#{encodeURI(req.protocol + '://' + req.headers.host + '/' + page.url)}")
 meta(name="viewport", content="width=device-width, initial-scale=1")

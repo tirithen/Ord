@@ -9,7 +9,8 @@ block content
         p
           strong Page not found!
           | &nbsp;The page you requested could not be found.&nbsp;
-          a(href="/") Return to start page
+          if req.url !== '/'
+            a(href="/") Return to start page
 
     if req.isAuthenticated()
       p
