@@ -34,6 +34,7 @@ if (!allSiteSettings.facebookAppId || !allSiteSettings.facebookAppSecret) {
                 facebookId: profile.id
               , firstName: profile.name.givenName
               , lastName: profile.name.familyName
+              , email: profile.emails[0] ? profile.emails[0].value : null
               , image: 'https://graph.facebook.com/' + profile.id + '/picture?type=square'
             }
           , propertyName = '';
@@ -65,6 +66,7 @@ if (!allSiteSettings.facebookAppId || !allSiteSettings.facebookAppSecret) {
   //     /auth/facebook/callback
   module.exports['GET /login'] = passport.authenticate(
       'facebook'
+    , { scope: 'email' }
   );
 
   // Facebook will redirect the user to this URL after approval.  Finish the

@@ -2,6 +2,6 @@ mixin user(user)
   div.media
     img(src="#{ user.image }").media-object.pull-left
     div.media-body
-      p= user.name
-      p
+      div= user.name
+      div
         a(href="mailto:#{ user.email }").email= user.email

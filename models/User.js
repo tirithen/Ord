@@ -6,6 +6,7 @@ module.exports = function (mongoose) {
   schema = new mongoose.Schema({
       firstName: { type: String, trim: true }
     , lastName: { type: String, trim: true }
+    , email: { type: String, trim: true }
     , image: { type: String, trim: true }
     , facebookId: { type: String, trim: true, unique: true }
     , updatedAt: { type: Date, default: Date.now }
