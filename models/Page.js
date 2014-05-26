@@ -23,7 +23,7 @@ module.exports = function (mongoose) {
   function verifyNoParentIfIsFrontPage(value) {
     var valid = true;
 
-    if (this.isFrontPage && this.parent) {
+    if (value && this.isFrontPage && this.parent) {
       valid = false;
       // TODO: add user friendly error message
     }
