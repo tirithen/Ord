@@ -19,6 +19,7 @@ function PageEditor($scope, $rootScope, $element, $http) {
   $scope.data.showInMenu = $element.find('#pageDataShowInMenu').get(0).getAttribute('checked');
   $scope.data.content = $element.find('main').get(0).innerHTML;
   $scope.data.parent = undefined; // Set to undefined as angular adds an empty option for the select tag if null
+  $scope.isFrontPage = false;
 
   $scope.parentOptions = [];
 

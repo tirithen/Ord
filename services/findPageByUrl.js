@@ -9,6 +9,10 @@ module.exports = function (urlQuery, callback) {
   urlQuery = decodeURIComponent(urlQuery.pathname).trim().replace(/^\/+/, '').split('/');
 
   query.title = urlQuery[urlQuery.length - 1];
+  if (query.title === '') {
+    delete query.title;
+    query.isFrontPage = true;
+  }
 
   if (urlQuery.length === 1) {
     query.parent = null;
@@ -26,7 +30,7 @@ module.exports = function (urlQuery, callback) {
         models.Page.populate(pages, { path: 'parent.parent' }, function (err, pages) {
           if (!err && Array.isArray(pages)) {
             pages.forEach(function (page) {
-              var level = urlQuery.length - 1;
+              var level = page.isFrontPage ? -1 : urlQuery.length - 1;
 
               if (!pageResult) {
                 pageResult = page;

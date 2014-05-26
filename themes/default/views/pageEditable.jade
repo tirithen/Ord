@@ -48,6 +48,11 @@ block content
             label(for="pageDataShowInMenu")
               input(type="checkbox", id="pageDataShowInMenu", ng-model="data.showInMenu", checked="( page.showInMenu ? 'true' : undefined )")
               | Include in menu
+        div.form-group
+          div.checkbox
+            label(for="pageDataIsFrontPage")
+              input(type="checkbox", id="pageDataIsFrontPage", ng-model="data.isFrontPage", checked="( page.isFrontPage ? 'true' : undefined )")
+              | Use this page as the front page
 
       div.col-xs-12.col-sm-10
         input(type="submit", value="Save", ng-disabled="pageForm.$invalid || submissionState === 'submitting' || pageForm.$pristine").btn.btn-primary

@@ -3,11 +3,49 @@
 module.exports = function (mongoose) {
   var model, schema;
 
+  function setAllPagesIsFrontPageFalse(callback) {
+    model.update(
+        { isFrontPage: true }
+      , { $set: { isFrontPage: false } }
+      , { multi: true }
+      , function (err) {
+          if (err) {
+            console.error(err);
+          }
+
+          if (callback instanceof Function) {
+            callback(err);
+          }
+        }
+    );
+  }
+
+  function verifyNoParentIfIsFrontPage(value) {
+    var valid = true;
+
+    if (this.isFrontPage && this.parent) {
+      valid = false;
+      // TODO: add user friendly error message
+    }
+
+    return valid;
+  }
+
   schema = new mongoose.Schema({
       title: { type: String, required: true, trim: true }
     , content: { type: String, trim: true }
     , parent: {type: mongoose.Schema.Types.ObjectId, ref: 'Page' }
     , showInMenu: { type: Boolean, default: true, required: true }
+    , isFrontPage: {
+          type: Boolean
+        , default: false
+        , required: true
+        , set: function (value) {
+            setAllPagesIsFrontPageFalse();
+            return value;
+          }
+        , validate: verifyNoParentIfIsFrontPage
+      }
     , publishedAt: Date
     , updatedAt: { type: Date, default: Date.now }
     , createdAt: { type: Date, default: Date.now }
@@ -55,7 +93,7 @@ module.exports = function (mongoose) {
   model = mongoose.model('Page', schema);
 
   model.listSelectFields = '_id title url updatedAt';
-  model.showSelectFields = '_id title content parent showInMenu publishedAt updatedAt createdAt isPublished isPublic url';
+  model.showSelectFields = '_id title content parent showInMenu publishedAt updatedAt createdAt isPublished isPublic url isFrontPage';
 
   model.listMethod = function (listSelectFields, callback) {
     var fieldsFilter = (listSelectFields ? listSelectFields : model.listSelectFields).trim().split(/\s+/);
