@@ -18,17 +18,17 @@ block append resources
 
 block content
   div(ng-controller="PageEditor", ng-cloak)
-    div(ng-controller="AlertBag").col-xs-12.col-sm-10
+    div(ng-controller="AlertBag").col-xs-12.col-sm-9
       div(ng-repeat="alert in alerts", class="alert alert-{{ alert.type }}", style="animation-duration: {{ (alert.timeout || 0) / 1000 }}s;") {{ alert.message }}
         button(aria-hidden="true", ng-click="closeAlert($index)").close ×
 
     form(novalidate, ng-submit="submit()", name="pageForm").css-form
       input(id="pageData_id", type="hidden", ng-model="data._id", value="#{ page._id }")
 
-      main.col-xs-12.col-sm-10(role="main", contenteditable, required, minlength="1", ng-model="data.content")
+      main.col-xs-12.col-sm-9(role="main", contenteditable, required, minlength="1", ng-model="data.content")
         h1 #{ page.title || 'Page heading' }
 
-      div.col-xs-12.col-sm-10
+      div.col-xs-12.col-sm-9
         p.text-info Select some text and click on toolbar icon to set style for that text
 
       aside(ng-class="state === 'metaDataEditor' ? 'open' : 'closed'", ng-show="state !== 'pageView'")#meta.well.col-xs-10.col-sm-6.col-md-4
@@ -54,5 +54,5 @@ block content
               input(type="checkbox", id="pageDataIsFrontPage", ng-model="data.isFrontPage", checked="( page.isFrontPage ? 'true' : undefined )")
               | Use this page as the front page
 
-      div.col-xs-12.col-sm-10
+      div.col-xs-12.col-sm-9
         input(type="submit", value="Save", ng-disabled="pageForm.$invalid || submissionState === 'submitting' || pageForm.$pristine").btn.btn-primary

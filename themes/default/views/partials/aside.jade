@@ -1,5 +1,5 @@
 if page && page.breadcrumbs && page.breadcrumbs.length > 1
-  aside.col-xs-12.col-sm-10
+  aside.col-xs-12.col-sm-9
       ol.breadcrumb
         li
           a(href="/") Hem
@@ -12,7 +12,7 @@ if page && page.breadcrumbs && page.breadcrumbs.length > 1
                 a(href="#{encodeURI(breadcrumbPage.url)}")= breadcrumbPage.title
 
 if pageChildren && pageChildren.length > 0
-  aside.col-xs-12.col-sm-2.pull-right
+  aside.col-xs-12.col-sm-3.pull-right
       ul.nav.nav-stacked
         each pageChild in pageChildren
           if pageChild.isPublished && pageChild.title
