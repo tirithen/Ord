@@ -5,6 +5,7 @@ var path = require('path')
   , MongoStore = require('connect-mongo')(session)
   , cookieParser = require('cookie-parser')
   , bodyParser = require('body-parser')
+  , methodOverride = require('method-override')
   , lessMiddleware = require('less-middleware')
   , staticAsset = require('static-asset')
   , serverViewEnableMultipleDirectories = require('./serverViewEnableMultipleDirectories')
@@ -20,6 +21,7 @@ var path = require('path')
 
 server.set('case sensitive routing', true);
 server.use(bodyParser());
+server.use(methodOverride());
 server.use(cookieParser());
 server.use(session({
     name: 'Ord'
