@@ -1,6 +1,3 @@
-// TODO: rename all variables called page(s) to entity/entities
-// TODO: add createdby and updatedby
-
 var models = require('../models')
   , services = require('../services')
   , modelName = ''
@@ -15,21 +12,21 @@ function addListAction(controller, model) {
     var listSelectFields = req && req.query.fields ? req.query.fields : model.listSelectFields || '_id updatedAt';
 
     if (model.listMethod instanceof Function) {
-      model.listMethod(listSelectFields, function (err, pages) {
+      model.listMethod(listSelectFields, function (err, modelInstances) {
         if (err) {
           res.status(500);
           services.sendJSON(res);
         } else {
-          services.sendJSON(res, pages);
+          services.sendJSON(res, modelInstances);
         }
       });
     } else {
-      model.find({}, listSelectFields, function (err, pages) {
+      model.find({}, listSelectFields, function (err, modelInstances) {
         if (err) {
           res.status(500);
           services.sendJSON(res);
         } else {
-          services.sendJSON(res, pages);
+          services.sendJSON(res, modelInstances);
         }
       });
     }
@@ -48,19 +45,19 @@ function addShowAction(controller, model) {
 
     model.findById(req.params.id)
       .populate('createdBy updatedBy')
-      .exec(function (err, page) {
+      .exec(function (err, modelInstance) {
         if (err) {
           res.status(500);
           services.sendJSON(res);
         } else {
           if (showSelectFields) {
-            for(key in page) {
+            for(key in modelInstance) {
               if (showSelectFields.indexOf(key) !== -1) {
-                data[key] = page[key];
+                data[key] = modelInstance[key];
               }
             }
           } else {
-            data = page;
+            data = modelInstance;
           }
 
           services.sendJSON(res, data);
@@ -71,71 +68,71 @@ function addShowAction(controller, model) {
 
 function addUpsertAction(controller, model) {
   controller['POST /api/v1/' + model.modelName] = function (req, res) {
-    var id = req.body._id, page, propertyName = '';
+    var id = req.body._id, modelInstance, propertyName = '';
 
     writeProtectedPropertyNames.forEach(function (propertyName) {
       delete req.body[propertyName];
     });
 
     if (id) {
-      model.findById(id, function (err, page) {
+      model.findById(id, function (err, modelInstance) {
         var propertyName = '';
 
         if (err) {
           res.status(500)
           services.sendJSON(res, err);
-        } else if(page) {
+        } else if(modelInstance) {
           for(propertyName in req.body) {
             if (req.body.hasOwnProperty(propertyName)) {
 
-              page[propertyName] = req.body[propertyName];
+              modelInstance[propertyName] = req.body[propertyName];
             }
           }
 
-          page.updatedBy = req.user;
+          modelInstance.updatedBy = req.user;
 
-          page.save(function (err) {
+          modelInstance.save(function (err) {
             if (err) {
               console.error(err);
               res.status(400);
               services.sendJSON(res, err);
             } else {
               res.status(200);
-              services.sendJSON(res, page);
+              services.sendJSON(res, modelInstance);
             }
           });
-        } else { // TODO: do not repeat yourself, handle new pages in ONE place
-          page = new models.Page(req.body);
+        } else { // TODO: do not repeat yourself, handle new modelInstances in ONE place
+          modelInstance = new model(req.body);
 
-          page.createdBy = req.user;
-          page.updatedBy = req.user;
+          modelInstance.createdBy = req.user;
+          modelInstance.updatedBy = req.user;
 
-          page.save(function (err) {
+          modelInstance.save(function (err) {
             if (err) {
               console.error(err);
               res.status(400);
               services.sendJSON(res, err);
             } else {
               res.status(201);
-              services.sendJSON(res, page);
+              services.sendJSON(res, modelInstance);
             }
           });
         }
       });
-    } else { // TODO: do not repeat yourself, handle new pages in ONE place
-      page = new models.Page(req.body);
+    } else { // TODO: do not repeat yourself, handle new modelInstances in ONE place
+      modelInstance = new model(req.body);
 
-      page.createdBy = req.user;
-      page.updatedBy = req.user;
+      modelInstance.createdBy = req.user;
+      modelInstance.updatedBy = req.user;
 
-      page.save(function (err) {
+      modelInstance.save(function (err) {
         if (err) {
           console.error(err);
           res.status(400);
           services.sendJSON(res, err);
         } else {
           res.status(201);
-          services.sendJSON(res, page);
+          services.sendJSON(res, modelInstance);
         }
       });
     }
