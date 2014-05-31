@@ -5,7 +5,7 @@ module.exports = function (mongoose) {
 
   schema = new mongoose.Schema({
       title: { type: String, required: true, trim: true, unique: true }
-    , systemTitle: { type: String, trim: true, unique: true }
+    , systemTitle: { type: String, trim: true, unique: true, get: function (value) { return value ? value : this.title; } }
     , members: [ {type: ObjectId, ref: 'User' } ]
     , updatedAt: { type: Date, default: Date.now }
     , createdAt: { type: Date, default: Date.now }

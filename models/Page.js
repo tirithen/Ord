@@ -129,6 +129,8 @@ module.exports = function (mongoose) {
   model.listSelectFields = '_id title url updatedAt';
   model.showSelectFields = '_id title content parent readibleBy writableBy showInMenu publishedAt updatedAt createdAt updatedBy createdBy isPublished isPublic url isFrontPage';
 
+  model.createUserGroups = [ 'editor' ];
+
   model.listMethod = function (listSelectFields, callback) {
     var fieldsFilter = (listSelectFields ? listSelectFields : model.listSelectFields).trim().split(/\s+/);
 

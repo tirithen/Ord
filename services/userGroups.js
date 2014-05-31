@@ -27,9 +27,6 @@ module.exports.createSystemUserGroupsIfMissing = function (callback) {
         }
       }
   );
-  systemUserGroups.forEach(function (systemUserGroupTitle) {
-
-  });
 };
 
 module.exports.createSystemUserGroupsIfMissing();
@@ -82,10 +79,10 @@ module.exports.getAll = function () {
 
 module.exports.userIsMemberOf = function (user, userGroupSearch) {
   var userGroups = module.exports.getForUser(user)
-    , userGroupSearchTitle = userGroupSearch instanceof models.UserGroup ? userGroupSearch.title : userGroupSearch;
+    , userGroupSearchSystemTitle = userGroupSearch instanceof models.UserGroup ? userGroupSearch.systemTitle : userGroupSearch;
 
   return userGroups.filter(function (userGroup) {
-    if (userGroup.title === userGroupSearchTitle) {
+    if (userGroup.systemTitle === userGroupSearchSystemTitle) {
       return true;
     } else {
       return false;

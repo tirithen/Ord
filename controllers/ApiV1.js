@@ -152,7 +152,13 @@ function addUpsertAction(controller, model) {
             services.sendJSON(res, modelInstance);
           }
         });
-      } else if(!modelInstance && req.user.isMemberOf('administrator')) { // TODO: make it possible to change required user group on model level
+      } else if(
+        !modelInstance &&
+        (
+          req.user.isMemberOf('administrator') ||
+          services.userGroups.userIsMemberOfOneOrMore(req.user, model.createUserGroups)
+        )
+      ) {
         modelInstance = new model(req.body);
 
         modelInstance.createdBy = req.user;
