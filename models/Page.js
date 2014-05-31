@@ -1,7 +1,17 @@
-//ar version = require('mongoose-version');
+var services;
 
 module.exports = function (mongoose) {
-  var model, schema;
+  var model
+    , schema
+    , ObjectId = mongoose.Schema.Types.ObjectId;
+
+  function getServices() {
+    if (!services) {
+      services = require('../services');
+    }
+
+    return services;
+  }
 
   function setAllPagesIsFrontPageFalse(callback) {
     model.update(
@@ -34,7 +44,7 @@ module.exports = function (mongoose) {
   schema = new mongoose.Schema({
       title: { type: String, required: true, trim: true }
     , content: { type: String, trim: true }
-    , parent: {type: mongoose.Schema.Types.ObjectId, ref: 'Page' }
+    , parent: {type: ObjectId, ref: 'Page' }
     , showInMenu: { type: Boolean, default: true, required: true }
     , isFrontPage: {
           type: Boolean
@@ -52,8 +62,10 @@ module.exports = function (mongoose) {
     , publishedAt: Date
     , updatedAt: { type: Date, default: Date.now }
     , createdAt: { type: Date, default: Date.now }
-    , updatedBy: {type: mongoose.Schema.Types.ObjectId, ref: 'User' }
-    , createdBy: {type: mongoose.Schema.Types.ObjectId, ref: 'User' }
+    , updatedBy: { type: ObjectId, ref: 'User' }
+    , createdBy: { type: ObjectId, ref: 'User' }
+    , readibleBy: [ { type: ObjectId, ref: 'UserGroup' } ]
+    , writableBy: [ { type: ObjectId, ref: 'UserGroup' } ]
   });
 
   schema.pre('save', function (next) {
@@ -88,15 +100,34 @@ module.exports = function (mongoose) {
     }).join('/');
   });
 
-  // TODO: fix broken mongoose-version
-  //schema.plugin(version, { strategy: 'array', collection: 'PageVersions' });
+  schema.methods.isReadibleBy = function (user) {
+    if (!user) {
+      return this.readibleBy.filter(function (userGroup) {
+        return userGroup.systemTitle === 'anyone';
+      }).length > 0;
+    } else {
+      return this.readibleBy.filter(function (userGroup) {
+        return getServices().userGroups.userIsMemberOf(user, userGroup);
+      }).length > 0;
+    }
+  };
+
+  schema.methods.isWritableBy = function (user) {
+    if (!user) {
+      return false; // Never allow write without user
+    } else {
+      return this.writableBy.filter(function (userGroup) {
+        return getServices().userGroups.userIsMemberOf(user, userGroup);
+      }).length > 0;
+    }
+  };
 
   schema.index({ parent: 1, title: 1 }, { unique: true });
 
   model = mongoose.model('Page', schema);
 
   model.listSelectFields = '_id title url updatedAt';
-  model.showSelectFields = '_id title content parent showInMenu publishedAt updatedAt createdAt isPublished isPublic url isFrontPage';
+  model.showSelectFields = '_id title content parent readibleBy writableBy showInMenu publishedAt updatedAt createdAt updatedBy createdBy isPublished isPublic url isFrontPage';
 
   model.listMethod = function (listSelectFields, callback) {
     var fieldsFilter = (listSelectFields ? listSelectFields : model.listSelectFields).trim().split(/\s+/);

@@ -13,6 +13,7 @@ var fs = require('fs')
     ]
   , allowedMethodsPattern = new RegExp('^(' + allowedMethods.join('|') + ')(\\s+|,)', 'i')
   , methodsExtractPattern = new RegExp('^\s*([' + allowedMethods.join('') + ',]+)(\\s+)', 'i')
+  , policyArgumentsExtractPattern = /^(.+?)\((.*?)\)\s*$/
   , middlewarePolicies = [];
 
 function registerController(moduleName, server) {
@@ -47,6 +48,18 @@ function registerController(moduleName, server) {
           methods = allowedMethods;
         }
 
+        policyNames = policyNames.map(function (policyName) {
+          matches = policyName.match(policyArgumentsExtractPattern);
+          if (matches) {
+            policyName = {
+                name: matches[1]
+              , arguments: matches[2].split(/["']*\s*,\s*["']*/)
+            };
+          }
+
+          return policyName;
+        });
+
         try {
           policyPattern = policyPatternName.match(/^(\/.+\/)([ig]*)$/);
           policyPattern = new RegExp(
@@ -61,11 +74,14 @@ function registerController(moduleName, server) {
         }
 
         policyNames.forEach(function (policyName) {
+          var policyArguments = policyName.arguments;
+          policyName = policyName.name || policyName;
           if (policies[policyName]) {
             middlewarePolicies.push({
                 urlPattern: policyPattern
               , methods: methods
               , policyName: policyName
+              , policyArguments: policyArguments
             });
           } else {
             throw new Error('The requested policy "' + policyName + '" is not ' +
@@ -109,7 +125,11 @@ module.exports = function (server) {
         req.url.match(policyConfiguration.urlPattern) &&
         policyConfiguration.methods.indexOf(req.method.toUpperCase()) !== -1
       ) {
-        policyMiddlewares.push(policies[policyConfiguration.policyName]);
+        if (policyConfiguration.policyArguments) {
+          policyMiddlewares.push(policies[policyConfiguration.policyName].apply(this, policyConfiguration.policyArguments));
+        } else {
+          policyMiddlewares.push(policies[policyConfiguration.policyName]);
+        }
       }
     });
 

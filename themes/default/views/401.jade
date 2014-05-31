@@ -1,0 +1,13 @@
+extends layout
+
+block content
+  main.col-xs-9(role="main")
+    if page
+      | #{page.content}
+    else
+      div.alert.alert-danger
+        p
+          strong Unauthorized!
+          | &nbsp;The page you requested needs an authenticated user.&nbsp;
+          a(href="/login") login
+          | &nbsp;brefore visiting this address again.

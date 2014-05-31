@@ -1,7 +1,17 @@
-//ar version = require('mongoose-version');
+var services;
 
 module.exports = function (mongoose) {
-  var model, schema;
+  var model
+    , schema
+    , ObjectId = mongoose.Schema.Types.ObjectId;
+
+  function getServices() {
+    if (!services) {
+      services = require('../services');
+    }
+
+    return services;
+  }
 
   schema = new mongoose.Schema({
       firstName: { type: String, trim: true }
@@ -11,8 +21,8 @@ module.exports = function (mongoose) {
     , facebookId: { type: String, trim: true, unique: true }
     , updatedAt: { type: Date, default: Date.now }
     , createdAt: { type: Date, default: Date.now }
-    , updatedBy: {type: mongoose.Schema.Types.ObjectId, ref: 'User' }
-    , createdBy: {type: mongoose.Schema.Types.ObjectId, ref: 'User' }
+    , updatedBy: { type: ObjectId, ref: 'User' }
+    , createdBy: { type: ObjectId, ref: 'User' }
   });
 
   schema.pre('save', function (next) {
@@ -24,8 +34,9 @@ module.exports = function (mongoose) {
     return this.firstName + ' ' + this.lastName;
   });
 
-  // TODO: fix broken mongoose-version
-  //schema.plugin(version, { strategy: 'array', collection: 'PageVersions' });
+  schema.methods.isMemberOf = function (userGroup) {
+    return getServices().userGroups.userIsMemberOf(this, userGroup);
+  };
 
   model = mongoose.model('User', schema);
 

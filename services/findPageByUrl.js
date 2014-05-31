@@ -20,7 +20,7 @@ module.exports = function (urlQuery, callback) {
 
   models.Page
     .find(query)
-    .populate('parent createdBy updatedBy')
+    .populate('parent createdBy updatedBy readibleBy writableBy')
     .exec(function (err, pages) {
       var pageResult;
 

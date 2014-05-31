@@ -1,0 +1,11 @@
+extends layout
+
+block content
+  main.col-xs-9(role="main")
+    if page
+      | #{page.content}
+    else
+      div.alert.alert-danger
+        p
+          strong Forbidden!
+          | &nbsp;You are not permitted to view the page you requested. Contact an administrator for more help.

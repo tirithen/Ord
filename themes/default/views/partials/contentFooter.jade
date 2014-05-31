@@ -1,4 +1,4 @@
-if page.createdBy || page.updatedBy
+if page && ( page.createdBy || page.updatedBy )
   aside.col-xs-12.col-sm-3.pull-right
     h1 Author
     if page.createdBy
@@ -8,7 +8,7 @@ if page.createdBy || page.updatedBy
       div.col-xs-6.col-sm-12
         +user(page.updatedBy)
 
-if req.isAuthenticated() && req.query.action !== 'edit' && req.query.action !== 'new'
+if page && req.isAuthenticated() && req.query.action !== 'edit' && req.query.action !== 'new'
   div.col-xs-12.col-sm-9
     p
       a(href="#{ page.url + '?action=edit' }").btn.btn-primary Edit this page

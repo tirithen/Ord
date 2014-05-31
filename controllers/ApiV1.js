@@ -7,6 +7,34 @@ var models = require('../models')
       , '_id', '__v'
     ];
 
+function userHasReadAccess(user, modelInstance) {
+  if (
+    (
+      modelInstance.readibleBy &&
+      modelInstance.readibleBy.length > 0 && services.userGroups.userIsMemberOfOneOrMore(user, modelInstance.readibleBy)
+    ) ||
+    (user && user.isMemberOf('administrator'))
+  ) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
+function userHasWriteAccess(user, modelInstance) {
+  if (
+    (
+      modelInstance.writableBy &&
+      modelInstance.writableBy.length > 0 && services.userGroups.userIsMemberOfOneOrMore(user, modelInstance.writableBy)
+    ) ||
+    (user && user.isMemberOf('administrator'))
+  ) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
 function addListAction(controller, model) {
   controller['GET /api/v1/' + model.modelName] = function (req, res) {
     var listSelectFields = req && req.query.fields ? req.query.fields : model.listSelectFields || '_id updatedAt';
@@ -17,6 +45,10 @@ function addListAction(controller, model) {
           res.status(500);
           services.sendJSON(res);
         } else {
+          modelInstances = modelInstances.filter(function (modelInstance) {
+            return userHasReadAccess(req.user, modelInstance);
+          });
+
           services.sendJSON(res, modelInstances);
         }
       });
@@ -26,6 +58,10 @@ function addListAction(controller, model) {
           res.status(500);
           services.sendJSON(res);
         } else {
+          modelInstances = modelInstances.filter(function (modelInstance) {
+            return userHasReadAccess(req.user, modelInstance);
+          });
+
           services.sendJSON(res, modelInstances);
         }
       });
@@ -37,14 +73,29 @@ function addShowAction(controller, model) {
   controller['GET /api/v1/' + model.modelName + '/:id'] = function (req, res) {
     var showSelectFields = req && req.query.fields ? req.query.fields : model.showSelectFields || null
       , data = {}
-      , key = '';
+      , key = ''
+      , fieldPopulationList = [];
 
     if (showSelectFields) {
       showSelectFields = showSelectFields.trim().split(/\s+/);
     }
 
+    showSelectFields.forEach(function (showSelectField) {
+      var field = model.schema.paths[showSelectField];
+
+      if (
+        field &&
+        (
+          ( field.instance && field.instance.toLowerCase() === 'objectid' ) ||
+          ( field.caster && field.caster.instance && field.caster.instance.toLowerCase() === 'objectid' )
+        )
+      ) {
+        fieldPopulationList.push(field.path);
+      }
+    });
+
     model.findById(req.params.id)
-      .populate('createdBy updatedBy')
+      .populate(fieldPopulationList.join(' '))
       .exec(function (err, modelInstance) {
         if (err) {
           res.status(500);
@@ -60,7 +111,12 @@ function addShowAction(controller, model) {
             data = modelInstance;
           }
 
-          services.sendJSON(res, data);
+          if (userHasReadAccess(req.user, modelInstance)) {
+            services.sendJSON(res, data);
+          } else {
+            res.status(403);
+            services.sendJSON(res, null);
+          }
         }
       });
   };
@@ -74,68 +130,52 @@ function addUpsertAction(controller, model) {
       delete req.body[propertyName];
     });
 
-    if (id) {
-      model.findById(id, function (err, modelInstance) {
-        var propertyName = '';
-
-        if (err) {
-          res.status(500)
-          services.sendJSON(res, err);
-        } else if(modelInstance) {
-          for(propertyName in req.body) {
-            if (req.body.hasOwnProperty(propertyName)) {
-
-              modelInstance[propertyName] = req.body[propertyName];
-            }
+    model.findById(id, function (err, modelInstance) {
+      if (err) {
+        res.status(500);
+        services.sendJSON(res);
+      } else if(modelInstance && userHasWriteAccess(req.user, modelInstance)) {
+        for(propertyName in req.body) {
+          if (req.body.hasOwnProperty(propertyName)) {
+            modelInstance[propertyName] = req.body[propertyName];
           }
-
-          modelInstance.updatedBy = req.user;
-
-          modelInstance.save(function (err) {
-            if (err) {
-              console.error(err);
-              res.status(400);
-              services.sendJSON(res, err);
-            } else {
-              res.status(200);
-              services.sendJSON(res, modelInstance);
-            }
-          });
-        } else { // TODO: do not repeat yourself, handle new modelInstances in ONE place
-          modelInstance = new model(req.body);
-
-          modelInstance.createdBy = req.user;
-          modelInstance.updatedBy = req.user;
-
-          modelInstance.save(function (err) {
-            if (err) {
-              console.error(err);
-              res.status(400);
-              services.sendJSON(res, err);
-            } else {
-              res.status(201);
-              services.sendJSON(res, modelInstance);
-            }
-          });
         }
-      });
-    } else { // TODO: do not repeat yourself, handle new modelInstances in ONE place
-      modelInstance = new model(req.body);
 
-      modelInstance.createdBy = req.user;
-      modelInstance.updatedBy = req.user;
+        modelInstance.updatedBy = req.user;
 
-      modelInstance.save(function (err) {
-        if (err) {
-          console.error(err);
-          res.status(400);
-          services.sendJSON(res, err);
-        } else {
-          res.status(201);
-          services.sendJSON(res, modelInstance);
-        }
-      });
-    }
+        modelInstance.save(function (err) {
+          if (err) {
+            res.status(400);
+            services.sendJSON(res, err);
+          } else {
+            res.status(200);
+            services.sendJSON(res, modelInstance);
+          }
+        });
+      } else if(!modelInstance && req.user.isMemberOf('administrator')) { // TODO: make it possible to change required user group on model level
+        modelInstance = new model(req.body);
+
+        modelInstance.createdBy = req.user;
+        modelInstance.updatedBy = req.user;
+
+        modelInstance.save(function (err) {
+          if (err) {
+            console.error(err);
+            res.status(400);
+            services.sendJSON(res, err);
+          } else {
+            res.status(201);
+            services.sendJSON(res, modelInstance);
+          }
+        });
+      } else if (req.isAuthenticated()) {
+        res.status(403);
+        services.sendJSON(res);
+      } else {
+        res.status(401);
+        services.sendJSON(res);
+      }
+    });
   };
 }
 
@@ -146,7 +186,3 @@ for(modelName in models) {
     addUpsertAction(module.exports, models[modelName]);
   }
 }
-
-module.exports.policies = {
-    '/^\\/api\\/v1/': 'isAuthenticated'
-};
