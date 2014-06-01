@@ -17,6 +17,7 @@ var path = require('path')
   , themeName = services.siteSettings.getAll().theme
   , policies
   , controllers
+  , port = process.env.PORT || 2000
   , directories = [];
 
 server.set('case sensitive routing', true);
@@ -102,6 +103,8 @@ controllers = require('./controllers')(server);
 server.get('*', services.pageRouter);
 
 // Start listening with the server
-server.listen(process.env.PORT || 2000);
+server.listen(port);
 
-console.log('Web server is now listening for connections on http://localhost:' + process.env.PORT || 2000);
+console.log('Web server is now listening for connections on http://localhost:' + port);
+
+module.exports = server;
