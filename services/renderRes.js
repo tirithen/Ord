@@ -17,6 +17,10 @@ module.exports = function (req, res, viewName, data) {
         console.error(err);
         res.status(500).send('Internal server error');
       } else {
+        rootPages = rootPages.filter(function (rootPage) {
+          return rootPage.isReadibleBy(req.user);
+        });
+console.log('rootPages', rootPages.length);
         data.rootPages = rootPages;
         res.render(viewName, data);
       }
