@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "postinstall": "./node_modules/bower/bin/bower install",
-    "test": "node_modules/.bin/vows"
+    "test": "node_modules/.bin/vows test/* --spec"
   },
   "repository": {
     "type": "git",
@@ -41,6 +41,8 @@
     "method-override": "^1.0.2"
   },
   "devDependencies": {
-    "vows": "^0.7.0"
+    "vows": "^0.7.0",
+    "assert": "^1.1.1",
+    "request": "^2.36.0"
   }
 }
