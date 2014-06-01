@@ -35,7 +35,7 @@ module.exports = function (callback) {
         }
       }
 
-      callback(err);
+      callback(err, services);
     }
   )
 };

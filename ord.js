@@ -12,7 +12,9 @@ function Ord() {
   self.services = require('./services');
 
   // Load services
-  self.services(function (err) {
+  self.services(function (err, services) {
+    self.services = services;
+
     if (err) {
       console.error(err);
       self.emit('error', err);
