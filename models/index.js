@@ -22,10 +22,15 @@ if (process.env.MONGO_CONNECTION_STRING_ENV_KEY) {
   if (!connectionString) {
     connectionString = 'mongodb://localhost/Ord';
   }
+
+  if (process.env.NODE_ENV === 'test') { // Add suffix to test database
+    connectionString += 'TemporaryTestDatabaseThatShouldBeRemovedAutomatically';
+  }
 }
 
 mongoose.connect(connectionString);
 
+module.exports.connectionString = connectionString;
 module.exports.mongoose = mongoose;
 
 fs.readdirSync(__dirname).forEach(function (fileName) {
