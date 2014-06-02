@@ -1,1 +1,2 @@
-var ord = new require('./ord')();
+var Ord = require('./ord')
+  , ord = new Ord();
