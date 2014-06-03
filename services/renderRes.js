@@ -20,7 +20,7 @@ module.exports = function (req, res, viewName, data) {
         rootPages = rootPages.filter(function (rootPage) {
           return rootPage.isReadibleBy(req.user);
         });
-console.log('rootPages', rootPages.length);
+
         data.rootPages = rootPages;
         res.render(viewName, data);
       }

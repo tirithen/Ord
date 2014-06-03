@@ -69,7 +69,15 @@ module.exports.getByTitle = function (title) {
 
 module.exports.getForUser = function (user) {
   return userGroups.filter(function (userGroup) {
-    if (userGroup.systemTitle !== 'anyone' && (!user || userGroup.members.indexOf(user._id) === -1)) {
+    var userGroupMemberIds = userGroup.members.map(function (member) {
+          if (member._id) {
+            return member._id.toString();
+          } else if (member) {
+            return member.toString();
+          }
+        });
+
+    if (userGroup.systemTitle !== 'anyone' && (!user || userGroupMemberIds.indexOf(user._id.toString()) === -1)) {
       return false;
     } else {
       return true;
@@ -82,10 +90,10 @@ module.exports.getAll = function () {
 };
 
 module.exports.userIsMemberOf = function (user, userGroupSearch) {
-  var userGroups = module.exports.getForUser(user)
+  var userGroupsForUser = module.exports.getForUser(user)
     , userGroupSearchSystemTitle = userGroupSearch instanceof models.UserGroup ? userGroupSearch.systemTitle : userGroupSearch;
 
-  return userGroups.filter(function (userGroup) {
+  return userGroupsForUser.filter(function (userGroup) {
     if (userGroup.systemTitle === userGroupSearchSystemTitle) {
       return true;
     } else {

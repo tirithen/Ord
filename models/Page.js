@@ -113,8 +113,6 @@ module.exports = function (mongoose) {
       }).length > 0;
     }
 
-console.log('isReadibleBy', this.title, this._id, result, user ? user.name : null);
-
     return result;
   };
 

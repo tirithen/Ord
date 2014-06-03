@@ -1,5 +1,21 @@
 var services
+  , models = require('../models')
+  , path = require('path')
   , async = require('async');
+
+function requestUserHasWritePermissions(req, page) {
+  if (!req.isAuthenticated()) {
+    return false;
+  } else if (
+    req.user.isMemberOf('administrator') ||
+    (page && page.isWritableBy(user)) ||
+    services.userGroups.userIsMemberOfOneOrMore(req.user, models.Page.createUserGroups || 'editor')
+  ) {
+    return true;
+  } else {
+    return false;
+  }
+}
 
 module.exports = function (req, res) {
   if (!services) {
@@ -35,10 +51,7 @@ module.exports = function (req, res) {
               console.error(err);
               res.status(500).send('Internal server error');
             } else if(req.query.action === 'edit') {
-              if (
-                req.isAuthenticated() &&
-                req.user.isMemberOf(services.userGroups.getBySystemTitle('editor'))
-              ) {
+              if (requestUserHasWritePermissions(req, page)) {
                 services.renderRes(
                     req, res, 'pageEditable'
                   , {
@@ -66,8 +79,7 @@ module.exports = function (req, res) {
         } else if(
           !page &&
           req.query.action === 'new' &&
-          req.isAuthenticated() &&
-          services.userGroups.userIsMemberOfOneOrMore(req.user, models.Page.createUserGroups || 'editor')
+          requestUserHasWritePermissions(req)
         ) {
           page = new models.Page();
           page.title = path.basename(req._parsedUrl.pathname);
@@ -78,7 +90,10 @@ module.exports = function (req, res) {
           );
         } else {
           res.status(404);
-          services.renderRes(req, res, '404');
+          services.renderRes(
+              req, res, '404'
+            , { allowedToCreatePage: requestUserHasWritePermissions(req) }
+          );
         }
       }
   );

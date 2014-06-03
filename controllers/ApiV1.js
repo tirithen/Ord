@@ -10,6 +10,7 @@ var models = require('../models')
 function userHasReadAccess(user, modelInstance) {
   if (
     (
+      modelInstance &&
       modelInstance.readibleBy &&
       modelInstance.readibleBy.length > 0 && services.userGroups.userIsMemberOfOneOrMore(user, modelInstance.readibleBy)
     ) ||
@@ -24,6 +25,7 @@ function userHasReadAccess(user, modelInstance) {
 function userHasWriteAccess(user, modelInstance) {
   if (
     (
+      modelInstance &&
       modelInstance.writableBy &&
       modelInstance.writableBy.length > 0 && services.userGroups.userIsMemberOfOneOrMore(user, modelInstance.writableBy)
     ) ||

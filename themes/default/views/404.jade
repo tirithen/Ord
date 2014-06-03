@@ -12,6 +12,6 @@ block content
           if req.url !== '/'
             a(href="/") Return to start page
 
-    if req.isAuthenticated()
+    if allowedToCreatePage
       p
         a(href="#{ req.url + '?action=new' }").btn.btn-primary Create a new page here
