@@ -14,6 +14,8 @@ module.exports.createSystemUserGroupsIfMissing = function (callback) {
           } else if (!userGroup) {
             userGroup = new models.UserGroup({ title: systemUserGroupTitle, systemTitle: systemUserGroupTitle });
             userGroup.save(next);
+          } else {
+            next();
           }
         });
       }
@@ -29,9 +31,7 @@ module.exports.createSystemUserGroupsIfMissing = function (callback) {
   );
 };
 
-module.exports.createSystemUserGroupsIfMissing();
-
-module.exports.update = function (callback) {
+module.exports.updateAllUserGroupsFromDatabase = function (callback) {
   models.UserGroup.find({}, function (err, userGroupDocuments) {
     if (err) {
       console.error(err);
@@ -40,6 +40,10 @@ module.exports.update = function (callback) {
     userGroups = userGroupDocuments || [];
 
     setTimeout(module.exports.update, userGroupUpdateInterval);
+
+    if (callback instanceof Function) {
+      callback(err);
+    }
   });
 };
 
@@ -106,4 +110,12 @@ module.exports.userIsMemberOfOneOrMore = function (user, userGroupSearch) {
   return result;
 };
 
-module.exports.update();
+module.exports.init = function (callback) {
+  async.parallel(
+      [
+          module.exports.createSystemUserGroupsIfMissing
+        , module.exports.updateAllUserGroupsFromDatabase
+      ]
+    , callback
+  );
+};
