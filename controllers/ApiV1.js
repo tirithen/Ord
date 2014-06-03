@@ -85,6 +85,7 @@ function addShowAction(controller, model) {
 
       if (
         field &&
+        field.path !== '_id' &&
         (
           ( field.instance && field.instance.toLowerCase() === 'objectid' ) ||
           ( field.caster && field.caster.instance && field.caster.instance.toLowerCase() === 'objectid' )
@@ -109,6 +110,19 @@ function addShowAction(controller, model) {
             }
           } else {
             data = modelInstance;
+          }
+
+          // Hide any populated models that user does not have permission to show
+          if (fieldPopulationList.length > 0) {
+            for(key in modelInstance) {
+              if (
+                modelInstance.hasOwnProperty(key) &&
+                fieldPopulationList.indexOf(key) !== -1 &&
+                !userHasReadAccess(req.user, modelInstance[key])
+              ) {
+                modelInstance[key] = modelInstance[key]._id;
+              }
+            }
           }
 
           if (userHasReadAccess(req.user, modelInstance)) {

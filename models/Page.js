@@ -101,25 +101,33 @@ module.exports = function (mongoose) {
   });
 
   schema.methods.isReadibleBy = function (user) {
+    var result = false;
+
     if (!user) {
-      return this.readibleBy.filter(function (userGroup) {
+      result = this.readibleBy.filter(function (userGroup) {
         return userGroup.systemTitle === 'anyone';
       }).length > 0;
     } else {
-      return this.readibleBy.filter(function (userGroup) {
+      result = this.readibleBy.filter(function (userGroup) {
         return getServices().userGroups.userIsMemberOf(user, userGroup);
       }).length > 0;
     }
+
+console.log('isReadibleBy', this.title, this._id, result, user ? user.name : null);
+
+    return result;
   };
 
   schema.methods.isWritableBy = function (user) {
-    if (!user) {
-      return false; // Never allow write without user
-    } else {
-      return this.writableBy.filter(function (userGroup) {
+    var result = false;
+
+    if (user) { // Only allow write with user
+      result = this.writableBy.filter(function (userGroup) {
         return getServices().userGroups.userIsMemberOf(user, userGroup);
       }).length > 0;
     }
+
+    return result;
   };
 
   schema.index({ parent: 1, title: 1 }, { unique: true });

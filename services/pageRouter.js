@@ -27,6 +27,10 @@ module.exports = function (req, res) {
           }
         } else if (page) {
           services.findPageChildren(page, function (err, pageChildren) {
+            pageChildren = pageChildren.filter(function (pageChild) {
+              return pageChild.isReadibleBy(req.user);
+            });
+
             if (err) {
               console.error(err);
               res.status(500).send('Internal server error');
