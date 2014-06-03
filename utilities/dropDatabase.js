@@ -23,7 +23,7 @@ function dropDatabase() {
           process.exit(1);
         }
 
-        console.log('Database was successfully dropped');
+        console.log('Database was successfully dropped (if it existed)');
         process.exit(0);
       });
     });
