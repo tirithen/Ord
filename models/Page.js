@@ -13,9 +13,9 @@ module.exports = function (mongoose) {
     return services;
   }
 
-  function setAllPagesIsFrontPageFalse(callback) {
+  function setAllOtherPagesIsFrontPageFalse(page, callback) {
     model.update(
-        { isFrontPage: true }
+        { isFrontPage: { $ne: false }, _id: { $ne: page._id } }
       , { $set: { isFrontPage: false } }
       , { multi: true }
       , function (err) {
@@ -52,7 +52,7 @@ module.exports = function (mongoose) {
         , required: true
         , set: function (value) {
             if (value) {
-              setAllPagesIsFrontPageFalse();
+              setAllOtherPagesIsFrontPageFalse(this);
             }
 
             return value;
@@ -95,9 +95,13 @@ module.exports = function (mongoose) {
   });
 
   schema.virtual('url').get(function () {
-    return '/' + this.breadcrumbs.map(function (breadcumbPage) {
-      return breadcumbPage.title
-    }).join('/');
+    if (this.isFrontPage) {
+      return '/';
+    } else {
+      return '/' + this.breadcrumbs.map(function (breadcumbPage) {
+        return breadcumbPage.title
+      }).join('/');
+    }
   });
 
   schema.methods.isReadibleBy = function (user) {
@@ -107,6 +111,8 @@ module.exports = function (mongoose) {
       result = this.readibleBy.filter(function (userGroup) {
         return userGroup.systemTitle === 'anyone';
       }).length > 0;
+    } else if (user.isMemberOf('administrator')) {
+      result = true;
     } else {
       result = this.readibleBy.filter(function (userGroup) {
         return getServices().userGroups.userIsMemberOf(user, userGroup);

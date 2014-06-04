@@ -82,8 +82,19 @@ module.exports = function (req, res) {
           requestUserHasWritePermissions(req)
         ) {
           page = new models.Page();
+
+          if (req.path === '/') {
+            page.isFrontPage = true;
+            page.showInMenu = false;
+          } else {
+            page.isFrontPage = false;
+            page.showInMenu = true;
+          }
+
+          page._id = null;
           page.title = path.basename(req._parsedUrl.pathname);
           page.publishedAt = (new Date()).toISOString();
+
           services.renderRes(
               req, res, 'pageEditable'
             , { page: page }

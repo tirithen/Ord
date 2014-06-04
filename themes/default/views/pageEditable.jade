@@ -23,35 +23,36 @@ block content
         button(aria-hidden="true", ng-click="closeAlert($index)").close ×
 
     form(novalidate, ng-submit="submit()", name="pageForm").css-form
-      input(id="pageData_id", type="hidden", ng-model="data._id", value="#{ page._id }")
+      input(id="pageData_id", type="hidden", ng-model="data._id", value="#{ page._id || ''}")
 
       main.col-xs-12.col-sm-9(role="main", contenteditable, required, minlength="1", ng-model="data.content")
-        h1 #{ page.title || 'Page heading' }
+        h1 #{ page.title || 'Type your heading' }
+        p Type your page content
 
       div.col-xs-12.col-sm-9
         p.text-info Select some text and click on toolbar icon to set style for that text
 
       aside(ng-class="state === 'metaDataEditor' ? 'open' : 'closed'", ng-show="state !== 'pageView'")#meta.well.col-xs-10.col-sm-6.col-md-4
-        h1.h3 Meta data for the page
-        button(type="button", ng-click="state = (state === 'metaDataEditor' ? 'pageEditor' : 'metaDataEditor')").well.toggle Meta data
+        h1.h3 Page settings
+        button(type="button", ng-click="state = (state === 'metaDataEditor' ? 'pageEditor' : 'metaDataEditor')").well.toggle Page settings
         div.form-group
           label(for="pageDataTitle") Title
-          input(id="pageDataTitle", type="text", required, minlength="1", ng-model="data.title", value="#{ page.title }").form-control
+          input(id="pageDataTitle", type="text", required, minlength="1", ng-model="data.title", value="#{ page.title || '' }", placeholder="Type your page title").form-control
         div.form-group
           label(for="pageDataPublishedAt") Published
-          input(id="pageDataPublishedAt", type="datetime-local", required, minlength="1", ng-model="data.publishedAt", value="#{ page.publishedAt }").form-control
+          input(id="pageDataPublishedAt", type="datetime-local", required, minlength="1", ng-model="data.publishedAt", value="#{ page.publishedAt || '' }").form-control
         div.form-group
           label(for="pageDataParent") Parent page
           select(id="pageDataParent", ng-options="parentOption._id as parentOption.url for parentOption in parentOptions", ng-model="data.parent").form-control
         div.form-group
           div.checkbox
             label(for="pageDataShowInMenu")
-              input(type="checkbox", id="pageDataShowInMenu", ng-model="data.showInMenu", checked="( page.showInMenu ? 'true' : undefined )")
+              input(type="checkbox", id="pageDataShowInMenu", ng-model="data.showInMenu", checked=( page.showInMenu ? 'checked' : undefined ))
               | Include in menu
         div.form-group
           div.checkbox
             label(for="pageDataIsFrontPage")
-              input(type="checkbox", id="pageDataIsFrontPage", ng-model="data.isFrontPage", checked="( page.isFrontPage ? 'true' : undefined )")
+              input(type="checkbox", id="pageDataIsFrontPage", ng-model="data.isFrontPage", checked=( page.isFrontPage ? 'checked' : undefined ))
               | Use this page as the front page
 
       div.col-xs-12.col-sm-9
