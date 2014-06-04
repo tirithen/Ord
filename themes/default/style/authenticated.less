@@ -18,10 +18,11 @@ main {
 
 #meta {
   .noShadow;
-  transition: margin 0.25s, box-shadow 0.5s, opacity 0.25s;
+  transition: left 0.25s, box-shadow 0.5s, opacity 0.25s;
   position: absolute;
   z-index: 2;
   opacity: 0.5;
+  top: 0;
 
   &:hover {
     .shadow;
@@ -29,16 +30,16 @@ main {
   }
 
   &.closed {
-    margin-left: 100%;
+    left: 100% * (1 + 1/3);
 
     &:hover {
-      margin-left: 98%;
+      left: 100% * (1 + 1/3) - 1;
     }
   }
 
   &.open {
     .shadow;
-    margin-left: 2/12 * 100%;
+    left: 100%;
     opacity: 1;
 
     button.toggle {
@@ -78,24 +79,6 @@ main {
       right: -38px;
       top: -11px;
       width: 40px;
-    }
-  }
-}
-
-@media (min-width: @screen-sm-min) {
-  #meta {
-    &.open {
-      .shadow;
-      margin-left: 6/12 * 100%;
-    }
-  }
-}
-
-@media (min-width: @screen-md-min) {
-  #meta {
-    &.open {
-      .shadow;
-      margin-left: 8/12 * 100%;
     }
   }
 }
