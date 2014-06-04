@@ -30,6 +30,10 @@ function PageEditor($scope, $rootScope, $element, $http) {
       .success(function (page) {
         var key = '';
 
+        if (!page.parent) {
+          page.parent = undefined;
+        }
+
         for(key in page) {
           if (page.hasOwnProperty(key)) {
             $scope.data[key] = page[key];
