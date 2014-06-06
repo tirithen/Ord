@@ -98,6 +98,15 @@ module.exports = function (req, res) {
           page.title = decodeURIComponent(path.basename(req._parsedUrl.pathname));
           page.publishedAt = (new Date()).toISOString();
 
+          page.readibleBy.push(services.userGroups.getBySystemTitle('anyone'));
+          if (Array.isArray(models.Page.createUserGroups)) {
+            models.Page.createUserGroups.forEach(function (userGroup) {
+              page.writableBy.push(services.userGroups.getBySystemTitle(userGroup));
+            });
+          } else {
+            page.writableBy.push(services.userGroups.getBySystemTitle('editor'));
+          }
+
           services.renderRes(
               req, res, 'pageEditable'
             , {

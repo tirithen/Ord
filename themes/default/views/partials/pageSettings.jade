@@ -16,13 +16,13 @@ section#meta.modal.fade
         div.form-group
           label User groups that can to view this page
           div
-            label(ng-repeat="userGroupOption in userGroupOptions").checkbox-inline
+            label(ng-repeat="userGroupOption in userGroupOptions", ng-init="data.readibleBy = #{ JSON.stringify(page.readibleBy) }").checkbox-inline
               input(type="checkbox", checklist-model="data.readibleBy", checklist-value="userGroupOption._id")
               | {{ userGroupOption.title }}
         div.form-group
           label User groups that can change this page
           div
-            label(ng-repeat="userGroupOption in userGroupOptions", ng-show="userGroupOption.systemTitle !== 'anyone'").checkbox-inline
+            label(ng-repeat="userGroupOption in userGroupOptions", ng-init="data.writableBy = #{ JSON.stringify(page.writableBy) }", ng-show="userGroupOption.systemTitle !== 'anyone'").checkbox-inline
               input(type="checkbox", checklist-model="data.writableBy", checklist-value="userGroupOption._id")
               | {{ userGroupOption.title }}
         div.form-group
@@ -31,12 +31,12 @@ section#meta.modal.fade
         div.form-group
           div.checkbox
             label(for="pageDataShowInMenu")
-              input(type="checkbox", id="pageDataShowInMenu", ng-model="data.showInMenu", checked=( page.showInMenu ? 'checked' : undefined ))
+              input(type="checkbox", id="pageDataShowInMenu", ng-model="data.showInMenu", ng-init="data.showInMenu = #{ page.showInMenu }")
               | Include in menu
         div.form-group
           div.checkbox
             label(for="pageDataIsFrontPage")
-              input(type="checkbox", id="pageDataIsFrontPage", ng-model="data.isFrontPage", checked=( page.isFrontPage ? 'checked' : undefined ))
+              input(type="checkbox", id="pageDataIsFrontPage", ng-model="data.isFrontPage", ng-init="data.isFrontPage = #{ page.isFrontPage }")
               | Use this page as the front page
 
       div.modal-footer

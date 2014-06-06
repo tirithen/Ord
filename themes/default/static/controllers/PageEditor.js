@@ -18,8 +18,6 @@ function PageEditor($scope, $rootScope, $element, $http) {
   $scope.data._id = $scope.data._id === '' ? null : $scope.data._id;
   $scope.data.title = $element.find('#pageDataTitle').get(0).getAttribute('value');
   $scope.data.publishedAt = $element.find('#pageDataPublishedAt').get(0).getAttribute('value');
-  $scope.data.showInMenu = $element.find('#pageDataShowInMenu').get(0).getAttribute('checked') !== '';
-  $scope.data.isFrontPage = $element.find('#pageDataIsFrontPage').get(0).getAttribute('checked') !== '';
   $scope.data.content = $element.find('main').get(0).innerHTML;
   $scope.data.parent = undefined; // Set to undefined as angular adds an empty option for the select tag if null
   $scope.userGroupOptions = [];
