@@ -93,6 +93,17 @@ server.set(
 );
 server.set('view engine', 'jade');
 
+// Redirect URL with multiple slash to URL with single slash
+server.use(function (req, res, next) {
+  var singleSlashUrl = req.url.replace(/\/\/+/g, '/').replace(/\/+$/, '');
+
+  if (req.url !== singleSlashUrl) {
+    res.redirect(301, singleSlashUrl);
+  } else {
+    next();
+  }
+});
+
 // Register the policies
 policies = require('./policies')(server);
 
