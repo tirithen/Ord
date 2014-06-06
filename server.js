@@ -95,10 +95,16 @@ server.set('view engine', 'jade');
 
 // Redirect URL with multiple slash to URL with single slash
 server.use(function (req, res, next) {
-  var singleSlashUrl = req.url.replace(/\/\/+/g, '/').replace(/\/+$/, '');
+  var singleSlashUrl;
 
-  if (req.url !== singleSlashUrl) {
-    res.redirect(301, singleSlashUrl);
+  if (req.url !== '/') {
+    singleSlashUrl = req.url.replace(/\/\/+/g, '/').replace(/\/+$/, '');
+
+    if (req.url !== singleSlashUrl) {
+      res.redirect(301, singleSlashUrl);
+    } else {
+      next();
+    }
   } else {
     next();
   }
