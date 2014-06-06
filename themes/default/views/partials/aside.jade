@@ -1,18 +1,5 @@
-if page && page.breadcrumbs && page.breadcrumbs.length > 1
-  aside.col-xs-12.col-sm-9
-    ol.breadcrumb
-      li
-        a(href="/") Hem
-      each breadcrumbPage, index in page.breadcrumbs
-        if breadcrumbPage.isPublished && breadcrumbPage.title
-          if index === page.breadcrumbs.length - 1
-            li.active= breadcrumbPage.title
-          else
-            li
-              a(href="#{encodeURI(breadcrumbPage.url)}")= breadcrumbPage.title
-
 if pageChildren && pageChildren.length > 0
-  aside.col-xs-12.col-sm-3.pull-right
+  aside
     h1 Sub pages
     ul.nav.nav-stacked
       each pageChild in pageChildren

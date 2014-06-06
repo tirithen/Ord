@@ -1,0 +1,12 @@
+if page && page.breadcrumbs && page.breadcrumbs.length > 1
+  aside
+    ol.breadcrumb
+      li
+        a(href="/") Hem
+      each breadcrumbPage, index in page.breadcrumbs
+        if breadcrumbPage.isPublished && breadcrumbPage.title
+          if index === page.breadcrumbs.length - 1
+            li.active= breadcrumbPage.title
+          else
+            li
+              a(href="#{encodeURI(breadcrumbPage.url)}")= breadcrumbPage.title

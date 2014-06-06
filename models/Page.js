@@ -134,6 +134,18 @@ module.exports = function (mongoose) {
     return result;
   };
 
+  schema.methods.isReadibleByUserGroup = function (userGroupTest) {
+    return this.readibleBy.filter(function (userGroup) {
+      return userGroupTest._id.toString() === userGroup._id.toString();
+    }).length > 0;
+  };
+
+  schema.methods.isWritableByUserGroup = function (userGroupTest) {
+    return this.writableBy.filter(function (userGroup) {
+      return userGroupTest._id.toString() === userGroup._id.toString();
+    }).length > 0;
+  };
+
   schema.index({ parent: 1, title: 1 }, { unique: true });
 
   model = mongoose.model('Page', schema);

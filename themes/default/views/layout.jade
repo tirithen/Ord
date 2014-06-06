@@ -10,12 +10,12 @@ html(data-ng-app=(req.isAuthenticated() ? 'app' : undefined))
       include partials/mainMenu
     div.container-fluid
       div.row
-        block aside
-          include partials/aside
-        block flashBag
-          include partials/flashBag
-        block contentHeader
-          include partials/contentHeader
-        block content
-        block contentFooter
-          include partials/contentFooter
+        div.col-xs-12.col-sm-9
+          block contentHeader
+            include partials/contentHeader
+          block content
+          block contentFooter
+            include partials/contentFooter
+        div.col-xs-12.col-sm-3.pull-right
+          block aside
+            include partials/aside

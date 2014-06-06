@@ -22,6 +22,7 @@ function PageEditor($scope, $rootScope, $element, $http) {
   $scope.data.isFrontPage = $element.find('#pageDataIsFrontPage').get(0).getAttribute('checked') !== '';
   $scope.data.content = $element.find('main').get(0).innerHTML;
   $scope.data.parent = undefined; // Set to undefined as angular adds an empty option for the select tag if null
+  $scope.userGroupOptions = [];
   $scope.parentOptions = [];
   $scope.submissionState = 'idle';
 
@@ -30,7 +31,11 @@ function PageEditor($scope, $rootScope, $element, $http) {
       .success(function (page) {
         var key = '';
 
-        if (!page.parent) {
+        if (page.parent) {
+          if (page.parent._id) {
+            page.parent = page.parent._id;
+          }
+        } else {
           page.parent = undefined;
         }
 
@@ -38,6 +43,26 @@ function PageEditor($scope, $rootScope, $element, $http) {
           if (page.hasOwnProperty(key)) {
             $scope.data[key] = page[key];
           }
+        }
+
+        if ($scope.data.readibleBy) {
+          $scope.data.readibleBy = $scope.data.readibleBy.map(function (userGroup) {
+            if (userGroup._id) {
+              return userGroup._id;
+            } else {
+              return userGroup;
+            }
+          });
+        }
+
+        if ($scope.data.writableBy) {
+          $scope.data.writableBy = $scope.data.writableBy.map(function (userGroup) {
+            if (userGroup._id) {
+              return userGroup._id;
+            } else {
+              return userGroup;
+            }
+          });
         }
 
         if (!$scope.data.isPublished) {
@@ -61,6 +86,16 @@ function PageEditor($scope, $rootScope, $element, $http) {
       })
       .error(function (err) {
         $rootScope.$emit('addAlert', { type: 'danger', message: 'Unable to load parent page suggestions, please try to reload the page or try again later.' });
+      });
+  };
+
+  $scope.updateSelectableUserGroupOptionsFromServer = function () {
+    $http({ method: 'GET', url: '/api/v1/UserGroup?fields=_id title' })
+      .success(function (userGroupOptions) {
+        $scope.userGroupOptions = userGroupOptions;
+      })
+      .error(function (err) {
+        $rootScope.$emit('addAlert', { type: 'danger', message: 'Unable to load avaliable user groups, please try to reload the page or try again later.' });
       });
   };
 
@@ -89,4 +124,5 @@ function PageEditor($scope, $rootScope, $element, $http) {
     $scope.getPageDataFromServer();
   }
   $scope.updateParentFieldOptionsFromServer();
+  $scope.updateSelectableUserGroupOptionsFromServer();
 }

@@ -1,5 +1,6 @@
 var models = require('../models')
   , async = require('async')
+  , string = require('string')
   , userGroups = []
   , userGroupUpdateInterval = 10000
   , systemUserGroups = [ 'anyone', 'administrator', 'editor' ];
@@ -12,7 +13,7 @@ module.exports.createSystemUserGroupsIfMissing = function (callback) {
           if (err) {
             next(err);
           } else if (!userGroup) {
-            userGroup = new models.UserGroup({ title: systemUserGroupTitle, systemTitle: systemUserGroupTitle });
+            userGroup = new models.UserGroup({ title: string(systemUserGroupTitle).capitalize(), systemTitle: systemUserGroupTitle });
             userGroup.save(next);
           } else {
             next();

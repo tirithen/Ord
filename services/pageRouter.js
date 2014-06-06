@@ -57,6 +57,9 @@ module.exports = function (req, res) {
                   , {
                         page: page
                       , pageChildren: pageChildren
+                      , userGroups: services.userGroups.getAll().map(function (userGroup) {
+                          return { _id: userGroup._id, title: userGroup.title };
+                        })
                     }
                 );
               } else if (req.isAuthenticated()) {
@@ -92,12 +95,17 @@ module.exports = function (req, res) {
           }
 
           page._id = null;
-          page.title = path.basename(req._parsedUrl.pathname);
+          page.title = decodeURIComponent(path.basename(req._parsedUrl.pathname));
           page.publishedAt = (new Date()).toISOString();
 
           services.renderRes(
               req, res, 'pageEditable'
-            , { page: page }
+            , {
+                  page: page
+                , userGroups: services.userGroups.getAll().map(function (userGroup) {
+                    return { _id: userGroup._id, title: userGroup.title };
+                  })
+              }
           );
         } else {
           res.status(404);

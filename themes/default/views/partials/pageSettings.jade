@@ -1,0 +1,43 @@
+button(type="button", data-target="#meta", data-toggle="modal").btn.btn-default Page settings
+
+section#meta.modal.fade
+  div.modal-dialog
+    div.modal-content
+      div.modal-header
+        button(type="button", data-dismiss="modal", aria-hidden="true").close &times;
+        h1.modal-title Page settings
+      div.modal-body
+        div.form-group
+          label(for="pageDataTitle") Title
+          input(id="pageDataTitle", type="text", required, minlength="1", ng-model="data.title", value="#{ page.title || '' }", placeholder="Type your page title").form-control
+        div.form-group
+          label(for="pageDataPublishedAt") Published
+          input(id="pageDataPublishedAt", type="datetime-local", required, minlength="1", ng-model="data.publishedAt", value="#{ page.publishedAt || '' }").form-control
+        div.form-group
+          label User groups that can to view this page
+          div
+            label(ng-repeat="userGroupOption in userGroupOptions").checkbox-inline
+              input(type="checkbox", checklist-model="data.readibleBy", checklist-value="userGroupOption._id")
+              | {{ userGroupOption.title }}
+        div.form-group
+          label User groups that can change this page
+          div
+            label(ng-repeat="userGroupOption in userGroupOptions", ng-show="userGroupOption.systemTitle !== 'anyone'").checkbox-inline
+              input(type="checkbox", checklist-model="data.writableBy", checklist-value="userGroupOption._id")
+              | {{ userGroupOption.title }}
+        div.form-group
+          label(for="pageDataParent") Parent page
+          select(id="pageDataParent", ng-options="parentOption._id as parentOption.url for parentOption in parentOptions", ng-model="data.parent").form-control
+        div.form-group
+          div.checkbox
+            label(for="pageDataShowInMenu")
+              input(type="checkbox", id="pageDataShowInMenu", ng-model="data.showInMenu", checked=( page.showInMenu ? 'checked' : undefined ))
+              | Include in menu
+        div.form-group
+          div.checkbox
+            label(for="pageDataIsFrontPage")
+              input(type="checkbox", id="pageDataIsFrontPage", ng-model="data.isFrontPage", checked=( page.isFrontPage ? 'checked' : undefined ))
+              | Use this page as the front page
+
+      div.modal-footer
+        button(type="button", data-dismiss="modal").btn.btn-default Close
