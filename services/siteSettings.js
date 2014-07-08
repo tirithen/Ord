@@ -5,6 +5,7 @@ var models = require('../models')
       , facebookAppId: null
       , cookieSecret: require('crypto').randomBytes(16).toString('hex')
       , theme: 'default'
+      , allowSearchEnginesToIndex: false
     };
 
 module.exports.load = function (callback) {
