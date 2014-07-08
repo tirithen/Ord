@@ -202,7 +202,11 @@ function addUpsertAction(controller, model) {
 }
 
 for(modelName in models) {
-  if (modelName !== 'mongoose' && models.hasOwnProperty(modelName)) {
+  if (
+    modelName !== 'mongoose' &&
+    modelName !== 'connectionString' &&
+    models.hasOwnProperty(modelName)
+  ) {
     addListAction(module.exports, models[modelName]);
     addShowAction(module.exports, models[modelName]);
     addUpsertAction(module.exports, models[modelName]);
