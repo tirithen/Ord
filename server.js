@@ -3,7 +3,6 @@ var path = require('path')
   , async = require('async')
   , session = require('express-session')
   , MongoStore = require('connect-mongo')(session)
-  , cookieParser = require('cookie-parser')
   , bodyParser = require('body-parser')
   , methodOverride = require('method-override')
   , lessMiddleware = require('less-middleware')
@@ -17,13 +16,13 @@ var path = require('path')
   , themeName = services.siteSettings.getAll().theme
   , policies
   , controllers
-  , port = process.env.PORT || 2000
+  , port = process.env.PORT || 3000
   , directories = [];
 
 server.set('case sensitive routing', true);
-server.use(bodyParser());
+server.use(bodyParser.json());
+server.use(bodyParser.urlencoded({ extended: true }));
 server.use(methodOverride());
-server.use(cookieParser());
 server.use(session({
     name: 'Ord'
   , secret: services.siteSettings.getAll().cookieSecret
@@ -33,6 +32,10 @@ server.use(session({
   , store: new MongoStore({
         mongoose_connection: models.mongoose.connections[0]
     })
+  , saveUninitialized: false
+  , resave: false
+  , unset: 'destroy'
+  , rolling: false
 }));
 server.use(passport.initialize());
 server.use(passport.session());
