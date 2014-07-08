@@ -48,11 +48,15 @@ directories.forEach(function (directory) {
       directory
     , {
           debug: process.env.NODE_ENV === 'production' ? false : true
+        , once: process.env.NODE_ENV === 'production' ? true : false
         , compiler: {
-            sourceMap: true
-          , once: process.env.NODE_ENV === 'production' ? true : false
-          , yuicompress: process.env.NODE_ENV === 'production' ? true : false
-        }
+              sourceMap: process.env.NODE_ENV === 'production' ? false : true
+            , compress: process.env.NODE_ENV === 'production' ? true : false
+            , yuicompress: process.env.NODE_ENV === 'production' ? true : false
+          }
+        , parser: {
+            dumpLineNumbers: process.env.NODE_ENV === 'production' ? false : true
+          }
     }
   ));
   console.log('Registering LESS files source directory ' + directory);
