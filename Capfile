@@ -1,9 +1,12 @@
 require "capistrano/node-deploy"
 
+# This comfiguration file helps you to deploy with ease
+#
 # 1. Make sure that your host is accessible with :user via SSH, that :user has sudo
 #    permissions and that it support upstart jobs.
 # 2. Install the gem capistrano-node-deploy
 # 3. Edit below to fit your environment
+#
 # More documentation can be found at https://github.com/loopj/capistrano-node-deploy
 
 
