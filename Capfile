@@ -9,7 +9,7 @@ require "capistrano/node-deploy"
 # ----- Start of configuration parameters -----
 
 # Application
-set :application, "mojlighetsministeriet.se"
+set :application, "domain.com"
 role :app, :application
 set :app_environment, "PORT=80 MONGO_DB=mongodb://username:password@host:port/database_name"
 set :node_env, "production"
