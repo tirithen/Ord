@@ -1,7 +1,9 @@
 require "capistrano/node-deploy"
 
-# 1. Install the gem capistrano-node-deploy
-# 2. Edit below to fit your environment
+# 1. Make sure that your host is accessible with :user via SSH, that :user has sudo
+#    permissions and that it support upstart jobs.
+# 2. Install the gem capistrano-node-deploy
+# 3. Edit below to fit your environment
 # More documentation can be found at https://github.com/loopj/capistrano-node-deploy
 
 
@@ -9,14 +11,15 @@ require "capistrano/node-deploy"
 # ----- Start of configuration parameters -----
 
 # Application
-set :application, "domain.com"
-role :app, :application
+set :application, "appdomain.com"
+role :app, "#{application}"
 set :app_environment, "PORT=80 MONGO_DB=mongodb://username:password@host:port/database_name"
 set :node_env, "production"
+set :node_user, "#{application}"
 
 # Deploy from local repository
 set :repository,  "./"
-#set :user, "username"
+set :user, ENV['USER'] # Default to current user
 set :scm, :git
 set :deploy_to, "/var/htdocs/#{application}"
 set :deploy_via, :copy
