@@ -53,7 +53,7 @@ function registerController(moduleName, server) {
           if (matches) {
             policyName = {
                 name: matches[1]
-              , arguments: matches[2].split(/["']*\s*,\s*["']*/)
+              , arguments: matches[2].replace(/["']+/g, '').trim().split(/\s*,\s*/)
             };
           }
 
