@@ -14,8 +14,8 @@ if page && ( page.createdBy || page.updatedBy )
         div.col-xs-12.col-sm-6.col-md-4
           div.thumbnail
             +user(page.updatedBy)
-
-if page && req.isAuthenticated() && req.query.action !== 'edit' && req.query.action !== 'new'
+//- TODO: Only show edit this page if user has permission
+if page && req.isAuthenticated() && req.query.action !== 'edit' && req.query.action !== 'new' && page.isWritableBy instanceof Function && page.isWritableBy(req.user)
   aside
     div.row
       div.col-xs-12
