@@ -1,0 +1,22 @@
+block append resources
+  //- AngularJS
+  script(src="#{req.assetFingerprint('/bower_components/angular/angular.' + (process.env.NODE_ENV === 'production' ? 'min.' : '') + 'js')}")
+  script(src="#{req.assetFingerprint('/bower_components/angular-sanitize/angular-sanitize.' + (process.env.NODE_ENV === 'production' ? 'min.' : '') + 'js')}")
+  script(src="#{req.assetFingerprint('/bower_components/angular-resource/angular-resource.' + (process.env.NODE_ENV === 'production' ? 'min.' : '') + 'js')}")
+  script(src="#{req.assetFingerprint('/bower_components/checklist-model/checklist-model.js')}")
+
+  //- Medium editor
+  script(src="#{req.assetFingerprint('/bower_components/medium-editor/dist/js/medium-editor.' + (process.env.NODE_ENV === 'production' ? 'min.' : '') + 'js')}")
+  link(rel="stylesheet", href="#{req.assetFingerprint('/bower_components/medium-editor/dist/css/medium-editor.' + (process.env.NODE_ENV === 'production' ? 'min.' : '') + 'css')}")
+  link(rel="stylesheet", href="#{req.assetFingerprint('/bower_components/medium-editor/dist/css/themes/bootstrap.' + (process.env.NODE_ENV === 'production' ? 'min.' : '') + 'css')}")
+
+  //- Ord scripts
+  script(src="#{req.assetFingerprint('/themes/default/static/app.js')}")
+  script(src="#{req.assetFingerprint('/themes/default/static/directives/contenteditable.js')}")
+  script(src="#{req.assetFingerprint('/themes/default/static/services/ResourceService.js')}")
+  script(src="#{req.assetFingerprint('/themes/default/static/controllers/AlertBag.js')}")
+  script(src="#{req.assetFingerprint('/themes/default/static/controllers/PageEditor.js')}")
+  script(src="#{req.assetFingerprint('/themes/default/static/controllers/AdministrationUserGroupController.js')}")
+  script(src="#{req.assetFingerprint('/themes/default/static/controllers/AdministrationUserController.js')}")
+
+  link(rel="stylesheet", href="#{req.assetFingerprint('/themes/default/style/authenticated.css')}")

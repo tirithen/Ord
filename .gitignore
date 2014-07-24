@@ -30,3 +30,6 @@ bower_components
 # Compiled CSS files
 /style/*.css
 /themes/*/style/*.css
+
+# VIM
+*.swp

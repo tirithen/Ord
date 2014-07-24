@@ -1,0 +1,10 @@
+extends layout
+
+block content
+  main(role="main")
+    h1 Administration
+    p Here you can manage users, user groups and site settings
+    ul
+      li
+        //- a(href="/administration/siteSettings") Site settings
+        a(href="/administration/users") Users and user groups

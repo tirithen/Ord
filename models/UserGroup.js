@@ -20,7 +20,7 @@ module.exports = function (mongoose) {
 
   model = mongoose.model('UserGroup', schema);
 
-  model.listSelectFields = '_id title systemTitle updatedAt';
+  model.listSelectFields = '_id title systemTitle updatedAt members';
 
   return model;
 };

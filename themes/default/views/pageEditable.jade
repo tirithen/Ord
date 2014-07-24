@@ -1,28 +1,7 @@
 extends layout
 
-block append resources
-  //- AngularJS
-  script(src="#{req.assetFingerprint('/bower_components/angular/angular.' + (process.env.NODE_ENV === 'production' ? 'min.' : '') + 'js')}")
-  script(src="#{req.assetFingerprint('/bower_components/angular-sanitize/angular-sanitize.' + (process.env.NODE_ENV === 'production' ? 'min.' : '') + 'js')}")
-  script(src="#{req.assetFingerprint('/bower_components/checklist-model/checklist-model.js')}")
-
-  //- Medium editor
-  script(src="#{req.assetFingerprint('/bower_components/medium-editor/dist/js/medium-editor.' + (process.env.NODE_ENV === 'production' ? 'min.' : '') + 'js')}")
-  link(rel="stylesheet", href="#{req.assetFingerprint('/bower_components/medium-editor/dist/css/medium-editor.' + (process.env.NODE_ENV === 'production' ? 'min.' : '') + 'css')}")
-  link(rel="stylesheet", href="#{req.assetFingerprint('/bower_components/medium-editor/dist/css/themes/bootstrap.' + (process.env.NODE_ENV === 'production' ? 'min.' : '') + 'css')}")
-
-  //- Ord scripts
-  script(src="#{req.assetFingerprint('/themes/default/static/app.js')}")
-  script(src="#{req.assetFingerprint('/themes/default/static/directives/contenteditable.js')}")
-  script(src="#{req.assetFingerprint('/themes/default/static/controllers/AlertBag.js')}")
-  script(src="#{req.assetFingerprint('/themes/default/static/controllers/PageEditor.js')}")
-
 block content
   div(ng-controller="PageEditor", ng-cloak)
-    div(ng-controller="AlertBag")
-      div(ng-repeat="alert in alerts", class="alert alert-{{ alert.type }}", style="animation-duration: {{ (alert.timeout || 0) / 1000 }}s;") {{ alert.message }}
-        button(aria-hidden="true", ng-click="closeAlert($index)").close ×
-
     form(novalidate, ng-submit="submit()", name="pageForm").css-form
       input(id="pageData_id", type="hidden", ng-model="data._id", value="#{ page._id || ''}")
 

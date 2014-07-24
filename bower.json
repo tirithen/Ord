@@ -25,6 +25,7 @@
     "angular": "~1.2.16",
     "angular-sanitize": "~1.2.16",
     "medium-editor": "~1.8.8",
-    "checklist-model": "~0.1.3"
+    "checklist-model": "~0.1.3",
+    "angular-resource": "~1.2.20"
   }
 }

@@ -1,1 +1,1 @@
-var app = angular.module('app', [ 'ngSanitize', 'checklist-model' ]);
+var app = angular.module('app', [ 'ngSanitize', 'checklist-model', 'ngResource' ]);

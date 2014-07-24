@@ -38,6 +38,7 @@
     "mongoose-version": "^0.2.4",
     "passport": "^0.2.0",
     "passport-facebook": "^1.0.3",
+    "promise": "^5.0.0",
     "static-asset": "^0.5.4",
     "string": "^1.8.1"
   },

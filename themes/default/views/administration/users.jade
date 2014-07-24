@@ -1,0 +1,37 @@
+extends layout
+
+block content
+  main(role="main")
+    h1 Administer users and user groups
+    section(data-ng-controller="AdministrationUserController")
+      h1.h2 Users
+      table.table
+        thead
+          tr
+            th Image
+            th Name
+            th Email
+            th Facebook
+        tbody
+          tr(data-ng-repeat="user in data.users")
+            td
+              img(width="32", src="{{ user.image }}", data-ng-show="user.image").img-circle
+            td {{ user.firstName }} {{ user.lastName }}
+            td
+              a(href="mailto:{{ user.email }}", data-ng-show="user.email") {{ user.email }}
+            td
+              a(href="https://www.facebook.com/{{ user.facebookId }}", data-ng-show="user.facebookId") {{ user.facebookId }}
+
+    section(data-ng-controller="AdministrationUserGroupController")
+      h1.h2 User groups
+      table.table
+        thead
+          tr
+            th Title
+            th Members
+        tbody
+          tr(data-ng-repeat="userGroup in data.userGroups")
+            td {{ userGroup.title }}
+            //- TODO: print user names instead of ids
+            td {{ userGroup.members.join(', ') }}
+

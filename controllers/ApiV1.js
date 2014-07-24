@@ -1,11 +1,11 @@
-var models = require('../models')
-  , services = require('../services')
-  , modelName = ''
-  , select = ''
-  , writeProtectedPropertyNames = [
-        'createdAt', 'deltedAt', 'updatedAt', 'createdBy', 'deletedBy', 'updatedBy'
-      , '_id', '__v'
-    ];
+var models = require('../models');
+var services = require('../services');
+var modelName = '';
+var select = '';
+var writeProtectedPropertyNames = [
+  'createdAt', 'deltedAt', 'updatedAt', 'createdBy', 'deletedBy', 'updatedBy',
+  '_id', '__v'
+];
 
 function userHasReadAccess(user, modelInstance) {
   if (
@@ -73,10 +73,10 @@ function addListAction(controller, model) {
 
 function addShowAction(controller, model) {
   controller['GET /api/v1/' + model.modelName + '/:id'] = function (req, res) {
-    var showSelectFields = req && req.query.fields ? req.query.fields : model.showSelectFields || null
-      , data = {}
-      , key = ''
-      , fieldPopulationList = [];
+    var showSelectFields = req && req.query.fields ? req.query.fields : model.showSelectFields || null;
+    var data = {};
+    var key = '';
+    var fieldPopulationList = [];
 
     if (showSelectFields) {
       showSelectFields = showSelectFields.trim().split(/\s+/);
@@ -201,6 +201,8 @@ function addUpsertAction(controller, model) {
   };
 }
 
+var apiMetaData = { resources: [] };
+
 for(modelName in models) {
   if (
     modelName !== 'mongoose' &&
@@ -210,5 +212,13 @@ for(modelName in models) {
     addListAction(module.exports, models[modelName]);
     addShowAction(module.exports, models[modelName]);
     addUpsertAction(module.exports, models[modelName]);
+    apiMetaData.resources.push({
+      name: modelName,
+      url: '/api/v1/' + modelName + '/:id'
+    }); // TODO: add more metadata for resource here
   }
 }
+
+module.exports['GET /api/v1'] = function (req, res) {
+  services.sendJSON(res, apiMetaData);
+};

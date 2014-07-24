@@ -1,3 +1,9 @@
+if req.isAuthenticated()
+  aside
+    div(ng-controller="AlertBag")
+      div(ng-repeat="alert in alerts", class="alert alert-{{ alert.type }}", style="animation-duration: {{ (alert.timeout || 0) / 1000 }}s;") {{ alert.message }}
+        button(aria-hidden="true", ng-click="closeAlert($index)").close ×
+
 if page && page.breadcrumbs && page.breadcrumbs.length > 1
   aside
     ol.breadcrumb

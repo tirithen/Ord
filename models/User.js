@@ -40,7 +40,7 @@ module.exports = function (mongoose) {
 
   model = mongoose.model('User', schema);
 
-  model.listSelectFields = '_id firstName lastName image';
+  model.listSelectFields = '_id firstName lastName email image facebookId updatedAt';
 
   return model;
 };
