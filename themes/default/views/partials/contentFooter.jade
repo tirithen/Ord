@@ -1,20 +1,5 @@
 include ../mixins/user
 
-if page && ( page.createdBy || page.updatedBy )
-  aside
-    div.row
-      h1.col-xs-12 Author
-
-    div.row
-      if page.createdBy
-        div.col-xs-12.col-sm-6.col-md-4
-          div.thumbnail
-            +user(page.createdBy)
-      if page.updatedBy && (!page.createdBy || page.createdBy._id.toString() !== page.updatedBy._id.toString())
-        div.col-xs-12.col-sm-6.col-md-4
-          div.thumbnail
-            +user(page.updatedBy)
-
 if page && req.isAuthenticated() && req.query.action !== 'edit' && req.query.action !== 'new' && page.isWritableBy instanceof Function && page.isWritableBy(req.user)
   aside
     div.row

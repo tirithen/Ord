@@ -20,14 +20,15 @@ div.navbar.navbar-inverse.navbar-fixed-top(role="navigation")
       ul.nav.navbar-nav.pull-right
         //- TODO: Add active state for current page li
         if req.isAuthenticated()
-          //- TODO: only show /administration if the user is an administrator
-          li
-            a(href="/administration") Administration
-          li
-            a(href="/profile")
-              img(src="#{req.user.image}", height="16").img-circle
-              | &nbsp;
-              span= req.user.name
+          if req.user.isMemberOf('accepted')
+            if req.user.isMemberOf('administrator')
+              li
+                a(href="/administration") Administration
+            li
+              a(href="/profile")
+                img(src="#{req.user.image}", height="16").img-circle
+                | &nbsp;
+                span= req.user.name
           li
             a(href="/logout") Logout
         else

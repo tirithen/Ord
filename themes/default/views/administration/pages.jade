@@ -1,0 +1,17 @@
+extends layout
+
+block content
+  main(role="main")
+    h1 Administer pages
+    section(data-ng-controller="AdministrationPageController")
+      h1.h2 Pages
+      table.table
+        thead
+          tr
+            th Title
+            th URL
+        tbody
+          tr(data-ng-repeat="page in data.pages")
+            td {{ page.title }}
+            td
+              a(href="/{{ page.url }}") {{ page.url }}

@@ -25,6 +25,6 @@ module.exports = {
     });*/
   },
   policies: {
-    '/^\\/administration/siteSettings/': 'isAuthenticated'
+    '/^\\/administration/siteSettings/': 'isMemberOfUserGroup("administrator")'
   }
 };

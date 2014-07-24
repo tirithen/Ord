@@ -1,8 +1,12 @@
-if req.isAuthenticated()
+if req.isAuthenticated() && req.user.isMemberOf('accepted')
   aside
     div(ng-controller="AlertBag")
       div(ng-repeat="alert in alerts", class="alert alert-{{ alert.type }}", style="animation-duration: {{ (alert.timeout || 0) / 1000 }}s;") {{ alert.message }}
         button(aria-hidden="true", ng-click="closeAlert($index)").close ×
+
+if req.isAuthenticated() && !req.user.isMemberOf('accepted')
+  aside
+    p.alert.alert-info You are logged in, but your account needs to be accepted by an administrator before having access to the restricted functionality.
 
 if page && page.breadcrumbs && page.breadcrumbs.length > 1
   aside

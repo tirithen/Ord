@@ -3,7 +3,7 @@ var models = require('../models')
   , string = require('string')
   , userGroups = []
   , userGroupUpdateInterval = 10000
-  , systemUserGroups = [ 'anyone', 'administrator', 'editor' ];
+  , systemUserGroups = [ 'anyone', 'accepted', 'administrator', 'editor' ];
 
 module.exports.createSystemUserGroupsIfMissing = function (callback) {
   async.each(
@@ -40,7 +40,7 @@ module.exports.updateAllUserGroupsFromDatabase = function (callback) {
 
     userGroups = userGroupDocuments || [];
 
-    setTimeout(module.exports.update, userGroupUpdateInterval);
+    setTimeout(module.exports.updateAllUserGroupsFromDatabase, userGroupUpdateInterval);
 
     if (callback instanceof Function) {
       callback(err);

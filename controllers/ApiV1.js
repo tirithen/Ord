@@ -222,3 +222,7 @@ for(modelName in models) {
 module.exports['GET /api/v1'] = function (req, res) {
   services.sendJSON(res, apiMetaData);
 };
+
+module.exports.policies = {
+  '/^\\/profile/': 'isMemberOfUserGroup("accepted")'
+};
