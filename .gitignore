@@ -33,3 +33,6 @@ bower_components
 
 # VIM
 *.swp
+
+# Capistrano
+Capfile
