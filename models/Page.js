@@ -126,9 +126,13 @@ module.exports = function (mongoose) {
     var result = false;
 
     if (user) { // Only allow write with user
-      result = this.writableBy.filter(function (userGroup) {
-        return getServices().userGroups.userIsMemberOf(user, userGroup);
-      }).length > 0;
+      if (user.isMemberOf('administrator')) {
+        result = true;
+      } else {
+        result = this.writableBy.filter(function (userGroup) {
+          return getServices().userGroups.userIsMemberOf(user, userGroup);
+        }).length > 0;
+      }
     }
 
     return result;
