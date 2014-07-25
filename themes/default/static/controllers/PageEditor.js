@@ -24,6 +24,28 @@ function PageEditor($scope, $rootScope, $element, $http) {
   $scope.parentOptions = [];
   $scope.submissionState = 'idle';
 
+  function convertReadibleByAndWritableByToIds() {
+    if ($scope.data.readibleBy) {
+      $scope.data.readibleBy = $scope.data.readibleBy.map(function (userGroup) {
+        if (userGroup._id) {
+          return userGroup._id;
+        } else {
+          return userGroup;
+        }
+      });
+    }
+
+    if ($scope.data.writableBy) {
+      $scope.data.writableBy = $scope.data.writableBy.map(function (userGroup) {
+        if (userGroup._id) {
+          return userGroup._id;
+        } else {
+          return userGroup;
+        }
+      });
+    }
+  }
+
   $scope.getPageDataFromServer = function () {
     $http({ method: 'GET', url: '/api/v1/Page/' + $scope.data._id })
       .success(function (page) {
@@ -43,25 +65,7 @@ function PageEditor($scope, $rootScope, $element, $http) {
           }
         }
 
-        if ($scope.data.readibleBy) {
-          $scope.data.readibleBy = $scope.data.readibleBy.map(function (userGroup) {
-            if (userGroup._id) {
-              return userGroup._id;
-            } else {
-              return userGroup;
-            }
-          });
-        }
-
-        if ($scope.data.writableBy) {
-          $scope.data.writableBy = $scope.data.writableBy.map(function (userGroup) {
-            if (userGroup._id) {
-              return userGroup._id;
-            } else {
-              return userGroup;
-            }
-          });
-        }
+        convertReadibleByAndWritableByToIds();
 
         if (!$scope.data.isPublished) {
           $rootScope.$emit('addAlert', { type: 'warning', message: 'This page is not published yet. It will be published ' + (new Date($scope.data.publishedAt)).toLocaleFormat(), timeout: false });
